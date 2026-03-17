@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Варианты фона</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: #0f0f0f; color: #fff; padding: 40px 32px; }
+  h1 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+  .subtitle { color: #999; font-size: 14px; margin-bottom: 40px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+  .card { border-radius: 20px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: all .25s; }
+  .card:hover { transform: translateY(-4px); border-color: #7C3AED; box-shadow: 0 16px 48px rgba(124,58,237,.4); }
+
+  .preview {
+    height: 220px; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; padding: 24px;
+  }
+
+  /* Mock navbar */
+  .mock-nav {
+    position: absolute; top: 0; left: 0; right: 0; height: 36px;
+    display: flex; align-items: center; padding: 0 20px;
+    justify-content: space-between; font-size: 11px; font-weight: 700;
+  }
+  .mock-dots { display: flex; gap: 5px; }
+  .mock-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* Mock content */
+  .mock-content { text-align: center; position: relative; z-index: 1; }
+  .mock-h1 { font-size: 18px; font-weight: 800; margin-bottom: 8px; line-height: 1.2; }
+  .mock-p { font-size: 11px; opacity: .65; margin-bottom: 14px; }
+  .mock-btn {
+    display: inline-block; padding: 7px 18px; border-radius: 8px;
+    font-size: 11px; font-weight: 700;
+    background: linear-gradient(135deg, #7C3AED, #8B5CF6);
+    color: #fff;
+  }
+
+  .label {
+    background: #1a1a1a; padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .label-title { font-size: 14px; font-weight: 700; color: #fff; }
+  .label-sub { font-size: 12px; color: #666; margin-top: 3px; }
+  .badge {
+    font-size: 10px; font-weight: 700; padding: 3px 8px;
+    border-radius: 4px; letter-spacing: .5px; text-transform: uppercase;
+  }
+  .badge-hot { background: #7C3AED22; color: #A78BFA; border: 1px solid #7C3AED40; }
+  .badge-dark { background: #ffffff10; color: #666; border: 1px solid #333; }
+  .badge-new { background: #05966920; color: #34D399; border: 1px solid #05966940; }
+
+  /* ────── BG VARIANTS ────── */
+
+  /* 1 — Mesh gradient */
+  .bg1 {
+    background: #0A0015;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 20% 30%, rgba(124,58,237,.45) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 50% at 80% 70%, rgba(37,99,235,.35) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 60% 10%, rgba(139,92,246,.25) 0%, transparent 50%);
+  }
+  .bg1 .mock-h1 { color: #fff; }
+  .bg1 .mock-p { color: rgba(255,255,255,.55); }
+  .bg1 .mock-nav { background: rgba(255,255,255,.04); border-bottom: 1px solid rgba(255,255,255,.06); color: rgba(255,255,255,.7); }
+
+  /* 2 — Светлый aurora */
+  .bg2 {
+    background: #fafafa;
+    background-image:
+      radial-gradient(ellipse 70% 55% at 15% 20%, rgba(167,139,250,.22) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 45% at 85% 80%, rgba(96,165,250,.18) 0%, transparent 55%),
+      radial-gradient(ellipse 45% 35% at 55% 50%, rgba(196,181,253,.15) 0%, transparent 50%);
+  }
+  .bg2 .mock-h1 { color: #111827; }
+  .bg2 .mock-p  { color: #6B7280; }
+  .bg2 .mock-nav { background: rgba(255,255,255,.8); border-bottom: 1px solid #E5E7EB; color: #374151; }
+
+  /* 3 — Noise + gradient (тёплый) */
+  .bg3 {
+    background: #0D0B1E;
+    background-image:
+      radial-gradient(ellipse 90% 70% at 50% 0%, rgba(124,58,237,.5) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 20% 90%, rgba(234,88,12,.2) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 40% at 80% 85%, rgba(217,119,6,.15) 0%, transparent 50%);
+  }
+  .bg3 .mock-h1 { color: #fff; }
+  .bg3 .mock-p  { color: rgba(255,255,255,.5); }
+  .bg3 .mock-nav { background: rgba(255,255,255,.03); border-bottom: 1px solid rgba(255,255,255,.07); color: rgba(255,255,255,.6); }
+
+  /* 4 — Glassmorphism */
+  .bg4 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  }
+  .bg4 .mock-content {
+    background: rgba(255,255,255,.12);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 16px;
+    padding: 20px 24px;
+  }
+  .bg4 .mock-h1 { color: #fff; }
+  .bg4 .mock-p  { color: rgba(255,255,255,.7); }
+  .bg4 .mock-nav { background: rgba(255,255,255,.08); border-bottom: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.8); }
+
+  /* 5 — Dot grid + cream */
+  .bg5 {
+    background: #FFFDF7;
+    background-image:
+      radial-gradient(circle, rgba(124,58,237,.12) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .bg5::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse 70% 50% at 50% 50%, rgba(255,253,247,.4) 0%, transparent 70%);
+  }
+  .bg5 .mock-h1 { color: #111827; }
+  .bg5 .mock-p  { color: #6B7280; }
+  .bg5 .mock-nav { background: rgba(255,253,247,.9); border-bottom: 1px solid #E5E7EB; color: #374151; }
+
+  /* 6 — Diagonal lines */
+  .bg6 {
+    background: #F8F6FF;
+    background-image:
+      repeating-linear-gradient(
+        -55deg,
+        rgba(124,58,237,.04) 0px,
+        rgba(124,58,237,.04) 1px,
+        transparent 1px,
+        transparent 28px
+      ),
+      radial-gradient(ellipse 60% 50% at 70% 30%, rgba(124,58,237,.1) 0%, transparent 60%);
+  }
+  .bg6 .mock-h1 { color: #111827; }
+  .bg6 .mock-p  { color: #6B7280; }
+  .bg6 .mock-nav { background: rgba(255,255,255,.8); border-bottom: 1px solid #E5E7EB; color: #374151; }
+
+  /* 7 — Deep dark grid */
+  .bg7 {
+    background: #060611;
+    background-image:
+      linear-gradient(rgba(124,58,237,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,58,237,.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .bg7::after {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(124,58,237,.2) 0%, transparent 60%);
+    pointer-events:none;
+  }
+  .bg7 .mock-h1 { color: #fff; }
+  .bg7 .mock-p  { color: rgba(255,255,255,.45); }
+  .bg7 .mock-nav { background: rgba(255,255,255,.03); border-bottom: 1px solid rgba(255,255,255,.05); color: rgba(255,255,255,.6); }
+
+  /* 8 — Сиреневый градиент светлый */
+  .bg8 {
+    background: linear-gradient(160deg, #EDE9FE 0%, #ffffff 40%, #EFF6FF 80%, #F0FDF4 100%);
+  }
+  .bg8 .mock-h1 { color: #111827; }
+  .bg8 .mock-p  { color: #6B7280; }
+  .bg8 .mock-nav { background: rgba(255,255,255,.7); border-bottom: 1px solid #E5E7EB; color: #374151; }
+
+  /* 9 — Blurred circles (сочный) */
+  .bg9 {
+    background: #0A0A1A;
+    overflow: hidden;
+  }
+  .bg9 .blob1 { position:absolute; width:300px; height:300px; border-radius:50%; background:rgba(124,58,237,.5); filter:blur(80px); top:-60px; left:-60px; }
+  .bg9 .blob2 { position:absolute; width:250px; height:250px; border-radius:50%; background:rgba(37,99,235,.4); filter:blur(70px); bottom:-40px; right:-40px; }
+  .bg9 .blob3 { position:absolute; width:180px; height:180px; border-radius:50%; background:rgba(5,150,105,.3); filter:blur(60px); top:50%; left:50%; transform:translate(-50%,-50%); }
+  .bg9 .mock-h1 { color: #fff; }
+  .bg9 .mock-p  { color: rgba(255,255,255,.55); }
+  .bg9 .mock-nav { background: rgba(255,255,255,.04); border-bottom: 1px solid rgba(255,255,255,.06); color: rgba(255,255,255,.65); }
+</style>
+</head>
+<body>
+  <h1>Варианты фона для EduPlatform</h1>
+  <p class="subtitle">Наведи на карточку — нажми чтобы скопировать CSS</p>
+
+  <div class="grid">
+
+    <!-- 1 -->
+    <div class="card">
+      <div class="preview bg1">
+        <div class="mock-nav">
+          <div class="mock-dots">
+            <div class="mock-dot" style="background:#ff5f57"></div>
+            <div class="mock-dot" style="background:#ffbd2e"></div>
+            <div class="mock-dot" style="background:#28c840"></div>
+          </div>
+          <span>EduPlatform</span>
+          <span>Войти</span>
+        </div>
+        <div class="mock-content">
+          <div class="mock-h1">Сдай ЕНТ<br/>с первого раза</div>
+          <div class="mock-p">Живые онлайн-уроки в Zoom</div>
+          <div class="mock-btn">Начать бесплатно</div>
+        </div>
+      </div>
+      <div class="label">
+        <div>
+          <div class="label-title">Mesh Gradient — Dark</div>
+          <div class="label-sub">Фиолетовый + синий, тёмный</div>
+        </div>
+        <span class="badge badge-hot">Топ</span>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="card">
+      <div class="preview bg2">
+        <div class="mock-nav">
+          <div class="mock-dots">
+            <div class="mock-dot" style="background:#ff5f57"></div>
+            <div class="mock-dot" style="background:#ffbd2e"></div>
+            <div class="mock-dot" style="background:#28c840"></div>
+          </div>
+          <span style="color:#111827">EduPlatform</span>
+          <span style="color:#6B7280">Войти</span>
+        </div>
+        <div class="mock-content">
+          <div class="mock-h1">Сдай ЕНТ<br/>с первого раза</div>
+          <div class="mock-p">Живые онлайн-уроки в Zoom</div>
+          <div class="mock-btn">Начать бесплатно</div>
+        </div>
+      </div>
+      <div class="label">
+        <div>
+          <div class="label-title">Aurora Light</div>
+          <div class="label-sub">Нежный светлый, сиреневый</div>
+        </div>
+        <span class="badge badge-new">Нежный</span>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="card">
+      <div class="preview bg3">
+        <div class="mock-nav">
+          <div class="mock-dots">
+            <div class="mock-dot" style="background:#ff5f57"></div>
+            <div class="mock-dot" style="background:#ffbd2e"></div>
+            <div class="mock-dot" style="background:#28c840"></div>
+          </div>
+          <span>EduPlatform</span>
+          <span>Войти</span>
+        </div>
+        <div class="mock-content">
+          <div class="mock-h1">Сдай ЕНТ<br/>с первого раза</div>
+          <div class="mock-p">Живые онлайн-уроки в Zoom</div>
+          <div class="mock-btn">Начать бесплатно</div>
+        </div>
+      </div>
+      <div class="label">
+        <div>
+          <div class="label-title">Dark + Warm Glow</div>
+          <div class="label-sub">Тёмный, фиолетовый + оранжевый</div>
+        </div>
+        <span class="badge badge-hot">Топ</span>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="card">
+      <div class="preview bg4">
+        <div class="mock-nav">
+          <div class="mock-dots">
+            <div class="mock-dot" style="background:#ff5f57"></div>
+            <div class="mock-dot" style="background:#ffbd2e"></div>
+            <div class="mock-dot" style="background:#28c840"></div>
+          </div>
+          <span>EduPlatform</span>
+          <span>Войти</span>
+        </div>
+        <div class="mock-content">
+          <div class="mock-h1">Сдай ЕНТ<br/>с первого раза</div>
+          <div class="mock-p">Живые онлайн-уроки в Zoom</div>
+          <div class="mock-btn" style="background:rgba(255,255,255,.25);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.3)">Начать бесплатно</div>
+        </div>
+      </div>
+      <div class="label">
+        <div>
+          <div class="label-title">Glassmorphism</div>
+          <div class="label-sub">Яркий градиент + стекло</div>
+        </div>
+        <span class="badge badge-hot">Яркий</span>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="card">
+      <div class="preview bg5">
+        <div class="mock-nav">
+          <div class="mock-dots">
+            <div class="mock-dot" style="background:#ff5f57"></div>
+            <div class="mock-dot" style="background:#ffbd2e"></div>
+            <div class="mock-dot" style="background:#28c840"></div>
+          </div>
+          <span style="color:#111827">EduPlatform</span>
+          <span style="color:#6B7280">Войти</span>
+        </div>
+        <div class="mock-content">
+          <div class="mock-h1">Сдай ЕНТ<br/>с первого раза</div>
+          <div class="mock-p">Живые онлайн-уроки в Zoom</div>
+          <div class="mock-btn">Начать бесплатно</div>
+        </div>
+      </div>
+      <div class="label">
+        <div>
+          <div class="label-title">Dot Grid + Cream</div>
+          <div class="label-sub">Точечная сетка, тёплый белый</div>
+        </div>
+        <span class="badge badge-new">Уютный</span>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="card">
+      <div class="preview bg6">
+        <div class="mock-nav">
+          <div class="mock-dots">
+            <div class="mock-dot" style="background:#ff5f57"></div>
+            <div class="mock-dot" style="background:#ffbd2e"></div>
+            <div class="mock-dot" style="background:#28c840"></div>
+          </div>
+          <span style="color:#111827">EduPlatform</span>
+          <span style="color:#6B7280">Войти</span>
+        </div>
+        <div class="mock-content">
+          <div class="mock-h1">Сдай ЕНТ<br/>с первого раза</div>
+          <div class="mock-p">Живые онлайн-уроки в Zoom</div>
+          <div class="mock-btn">Начать бесплатно</div>
+        </div>
+      </div>
+      <div class="label">
+        <div>
+          <div class="label-title">Diagonal Lines</div>
+          <div class="label-sub">Диагональные линии, светлый</div>
+        </div>
+        <span class="badge badge-dark">Тонкий</span>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="card">
+      <div class="preview bg7">
+        <div class="mock-nav">
+          <div class="mock-dots">
+            <div class="mock-dot" style="background:#ff5f57"></div>
+            <div class="mock-dot" style="background:#ffbd2e"></div>
+            <div class="mock-dot" style="background:#28c840"></div>
+          </div>
+          <span>EduPlatform</span>
+          <span>Войти</span>
+        </div>
+        <div class="mock-content" style="position:relative;z-index:2">
+          <div class="mock-h1">Сдай ЕНТ<br/>с первого раза</div>
+          <div class="mock-p">Живые онлайн-уроки в Zoom</div>
+          <div class="mock-btn">Начать бесплатно</div>
+        </div>
+      </div>
+      <div class="label">
+        <div>
+          <div class="label-title">Dark Grid</div>
+          <div class="label-sub">Тёмный с фиолетовой сеткой</div>
+        </div>
+        <span class="badge badge-dark">Тёмный</span>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="card">
+      <div class="preview bg8">
+        <div class="mock-nav">
+          <div class="mock-dots">
+            <div class="mock-dot" style="background:#ff5f57"></div>
+            <div class="mock-dot" style="background:#ffbd2e"></div>
+            <div class="mock-dot" style="background:#28c840"></div>
+          </div>
+          <span style="color:#111827">EduPlatform</span>
+          <span style="color:#6B7280">Войти</span>
+        </div>
+        <div class="mock-content">
+          <div class="mock-h1">Сдай ЕНТ<br/>с первого раза</div>
+          <div class="mock-p">Живые онлайн-уроки в Zoom</div>
+          <div class="mock-btn">Начать бесплатно</div>
+        </div>
+      </div>
+      <div class="label">
+        <div>
+          <div class="label-title">Tricolor Aurora</div>
+          <div class="label-sub">Сирень + белый + синий + мята</div>
+        </div>
+        <span class="badge badge-new">Свежий</span>
+      </div>
+    </div>
+
+    <!-- 9 -->
+    <div class="card">
+      <div class="preview bg9">
+        <div class="blob1"></div>
+        <div class="blob2"></div>
+        <div class="blob3"></div>
+        <div class="mock-nav">
+          <div class="mock-dots">
+            <div class="mock-dot" style="background:#ff5f57"></div>
+            <div class="mock-dot" style="background:#ffbd2e"></div>
+            <div class="mock-dot" style="background:#28c840"></div>
+          </div>
+          <span>EduPlatform</span>
+          <span>Войти</span>
+        </div>
+        <div class="mock-content">
+          <div class="mock-h1">Сдай ЕНТ<br/>с первого раза</div>
+          <div class="mock-p">Живые онлайн-уроки в Zoom</div>
+          <div class="mock-btn">Начать бесплатно</div>
+        </div>
+      </div>
+      <div class="label">
+        <div>
+          <div class="label-title">Blurred Blobs</div>
+          <div class="label-sub">Размытые цветные шары, тёмный</div>
+        </div>
+        <span class="badge badge-hot">Сочный</span>
+      </div>
+    </div>
+
+  </div>
+
+  <p style="text-align:center; color:#444; font-size:13px; margin-top:40px;">
+    Скажи номер понравившегося варианта — применю к сайту
+  </p>
+</body>
+</html>
