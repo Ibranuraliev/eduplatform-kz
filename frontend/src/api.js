@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api',
+  baseURL: process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'}/users/token/refresh/`, {
+        const res = await axios.post(`${process.env.REACT_APP_API_URL || 'http://127.0.0.1:8000/api'}/users/token/refresh/`, {
           refresh_token: refreshToken,
         });
         const newToken = res.data.token;
