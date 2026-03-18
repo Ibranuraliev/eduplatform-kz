@@ -385,13 +385,13 @@ export default function RegisterPage() {
                   { field:'consent_personal_data',  label:'Согласен на обработку персональных данных' },
                   { field:'consent_privacy_policy',  label:'Принимаю политику конфиденциальности' },
                 ].map(c => (
-                  <label key={c.field} style={{ display:'flex', gap:10, alignItems:'flex-start', cursor:'pointer' }}>
-                    <div onClick={() => set(c.field,!form[c.field])} style={{
+                  <label key={c.field} onClick={() => set(c.field,!form[c.field])} style={{ display:'flex', gap:10, alignItems:'flex-start', cursor:'pointer' }}>
+                    <div style={{
                       width:20, height:20, borderRadius:6, marginTop:1, flexShrink:0,
                       border:`2px solid ${form[c.field] ? C.violet : C.border}`,
                       background:form[c.field] ? C.violet : C.bg,
                       display:'flex', alignItems:'center', justifyContent:'center',
-                      cursor:'pointer', transition:'all .2s',
+                      pointerEvents:'none', transition:'all .2s',
                     }}>
                       {form[c.field] && <Check size={10} color="#fff" strokeWidth={3.5} />}
                     </div>
