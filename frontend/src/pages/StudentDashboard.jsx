@@ -286,6 +286,7 @@ export default function StudentDashboard() {
     finally { setHwSubmitting(null); }
   };
 
+  // eslint-disable-next-line no-unused-vars
   const submitGC = async () => {
     if (!gcReason.trim()) { showModal('error', 'Укажи причину', 'Пожалуйста, напиши причину смены группы'); return; }
     setGcLoading(true);
@@ -868,6 +869,7 @@ export default function StudentDashboard() {
               const cutoff = new Date(now2); cutoff.setDate(cutoff.getDate() - days);
 
               // Attendance per week buckets for the selected period
+              // eslint-disable-next-line no-unused-vars
               const attFiltered = attendance.filter(a => new Date(a.scheduled_at||a.session_date||now2) >= cutoff || true);
               // Generate week buckets for the chart
               const numWeeks = Math.max(Math.ceil(days/7), 2);
