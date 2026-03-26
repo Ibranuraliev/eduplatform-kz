@@ -450,12 +450,12 @@ export default function StudentDashboard() {
             )}
           </div>
 
-          {/* Telegram support */}
-          <a href="https://t.me/eduplatform_kz" target="_blank" rel="noreferrer"
-            style={{ background:'transparent',border:`1.5px solid ${P.border}`,borderRadius:12,width:42,height:42,display:'flex',alignItems:'center',justifyContent:'center',textDecoration:'none' }}
-            title="Поддержка">
-            <Send size={18} color={P.slate} />
-          </a>
+          {/* Chat button — always visible */}
+          <button onClick={()=>navigate('/chat')}
+            style={{ background:'transparent',border:`1.5px solid ${P.border}`,borderRadius:12,width:42,height:42,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer' }}
+            title="Чат">
+            <MessageCircle size={18} color={P.violet} />
+          </button>
 
           {/* User — click to open profile */}
           <div onClick={openProfile} style={{ display:'flex',alignItems:'center',gap:10,background:tab==='profile'?P.violet:P.violetPale,border:`1.5px solid ${tab==='profile'?'transparent':P.violetBorder}`,borderRadius:12,padding:'8px 16px',cursor:'pointer',transition:'all .2s' }}>
@@ -467,12 +467,6 @@ export default function StudentDashboard() {
             </div>
             {!isMobile && <span style={{ fontWeight:700,fontSize:14,color:tab==='profile'?'#fff':P.ink }}>{user?.first_name} {user?.last_name}</span>}
           </div>
-          {isMobile && (
-            <button onClick={()=>navigate('/chat')} style={{ background:'transparent',border:`1.5px solid ${P.border}`,borderRadius:12,width:42,height:42,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer' }}>
-              <MessageCircle size={18} color={P.violet} />
-            </button>
-          )}
-          {!isMobile && <button onClick={()=>navigate('/chat')} style={{ background:P.violetPale, border:`1.5px solid ${P.violetBorder}`, color:P.violet, borderRadius:12, padding:'8px 16px', cursor:'pointer', fontSize:14, fontWeight:700, fontFamily:font, display:'flex',alignItems:'center',gap:6 }}><MessageCircle size={16} /> Чат</button>}
           {!isMobile && <button onClick={logout} style={{ background:'none',border:'none',color:P.slate,cursor:'pointer',fontSize:14,fontWeight:600,fontFamily:font,display:'flex',alignItems:'center',gap:6 }}><LogOut size={16} /> Выйти</button>}
         </div>
       </nav>
@@ -1344,6 +1338,22 @@ export default function StudentDashboard() {
                     {profileLoading ? <><Clock size={16}/> Сохраняем...</> : <><Download size={16}/> Сохранить изменения</>}
                   </button>
                 </div>
+
+                {/* Support */}
+                <a href="https://t.me/eduplatform_kz" target="_blank" rel="noreferrer" style={{ textDecoration:'none' }}>
+                  <div style={card({display:'flex',alignItems:'center',justifyContent:'space-between',gap:16,cursor:'pointer',background:`linear-gradient(135deg,#229ED9 0%,#1a7fb5 100%)`,border:'none'})}>
+                    <div style={{ display:'flex',alignItems:'center',gap:14 }}>
+                      <div style={{ width:44,height:44,borderRadius:12,background:'rgba(255,255,255,.2)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0 }}>
+                        <Send size={22} color="#fff" />
+                      </div>
+                      <div>
+                        <div style={{ fontWeight:800,fontSize:15,color:'#fff',marginBottom:3 }}>Поддержка в Telegram</div>
+                        <div style={{ fontSize:13,color:'rgba(255,255,255,.8)' }}>@eduplatform_kz — ответим быстро</div>
+                      </div>
+                    </div>
+                    <div style={{ color:'rgba(255,255,255,.7)',fontSize:20,flexShrink:0 }}>→</div>
+                  </div>
+                </a>
 
                 {/* Change password */}
                 <div style={card()}>
