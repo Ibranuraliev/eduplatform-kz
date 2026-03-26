@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Star, CreditCard, Users, Rocket, Video, ClipboardCheck, BarChart2, UserCheck, Gift, LayoutDashboard, CheckCircle2 } from 'lucide-react';
+import { Star, BookOpen, CreditCard, Users, Rocket, Video, ClipboardCheck, BarChart2, UserCheck, Gift, LayoutDashboard, CheckCircle } from 'lucide-react';
 import useMobile from "../hooks/useMobile";
 
 /* ── Tokens ─────────────────────────────────────────── */
@@ -494,7 +494,7 @@ export default function CoursesPage() {
                             background: plan.color, flexShrink: 0,
                             display: "flex", alignItems: "center", justifyContent: "center",
                           }}>
-                            <CheckCircle2 size={12} color="#fff" strokeWidth={3} />
+                            <CheckCircle size={12} color="#fff" strokeWidth={3} />
                           </div>
                           <span style={{ fontSize: 14, color: C.ink }}>{f}</span>
                         </div>
@@ -720,7 +720,7 @@ export default function CoursesPage() {
               </a>
             </div>
             {[
-              { title:"Курсы",     links:[["ЕНТ","#courses"],["IELTS","#courses"],["SAT","#courses"]] },
+              { title:"Курсы",     links:[["ЕНТ","/catalog"],["IELTS","/catalog"],["SAT","/catalog"]] },
               { title:"Компания",  links:[["О нас","#"],["Вакансии","/apply-teacher"],["Контакты","#"]] },
               { title:"Поддержка", links:[["FAQ","#faq"],["Возврат","#"],["Правила","#"]] },
             ].map((col,i) => (
