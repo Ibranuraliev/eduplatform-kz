@@ -78,10 +78,18 @@ export default function RegisterPage() {
     try {
       const { confirm_password, ...data } = form;
       await register(data);
+      // Registration succeeded. Email verification is optional — try to send
+      // the code but DON'T block the success screen if the mail server fails.
       if (form.email.trim()) {
-        await api.post('/users/send-verification-email/', { email: form.email.trim() });
-        setStep(3);
-      } else { setStep(4); }
+        try {
+          await api.post('/users/send-verification-email/', { email: form.email.trim() });
+          setStep(3); // show verification code screen
+        } catch {
+          setStep(4); // email couldn't be sent, but user IS registered
+        }
+      } else {
+        setStep(4);
+      }
     } catch (err) {
       if (err.response?.status === 429) {
         setError('Слишком много попыток. Подождите немного и попробуйте снова.');

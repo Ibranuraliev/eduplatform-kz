@@ -145,11 +145,16 @@ AUTH_USER_MODEL = 'users.User'
 
 # CORS (allows frontend to talk to backend)
 _cors_origins = os.environ.get('CORS_ALLOWED_ORIGINS', '')
-CORS_ALLOWED_ORIGINS = [o.strip() for o in _cors_origins.split(',') if o.strip()] or [
+_extra_origins = [
     "http://localhost:3000",
     "http://localhost:5173",
     "http://127.0.0.1:3000",
+    "https://eduplatform-kz-el3g.vercel.app",  # production frontend
 ]
+CORS_ALLOWED_ORIGINS = list({
+    *[o.strip() for o in _cors_origins.split(',') if o.strip()],
+    *_extra_origins,
+})
 CORS_ALLOW_CREDENTIALS = True
 
 _csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
@@ -207,3 +212,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ibranuraliev@gmail.com'
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'avsb vlbt ixyh ttcw')
 DEFAULT_FROM_EMAIL = 'EduPlatform KZ <ibranuraliev@gmail.com>'
+EMAIL_TIMEOUT = 8  # seconds — prevents Railway killing the request on slow SMTP
