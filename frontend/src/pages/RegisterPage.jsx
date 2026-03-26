@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Check } from 'lucide-react';
 import api from '../api';
+import useMobile from '../hooks/useMobile';
 
 const C = {
   violet:      '#7C3AED',
@@ -49,6 +50,7 @@ export default function RegisterPage() {
   const [resendMsg, setResendMsg]         = useState('');
   const { register } = useAuth();
   const navigate = useNavigate();
+  const isMobile = useMobile();
 
   const set = (f, v) => setForm(p => ({ ...p, [f]: v }));
 
@@ -184,7 +186,7 @@ export default function RegisterPage() {
 
       {/* Left panel */}
       <div style={{
-        width:'42%', display:'flex', flexDirection:'column', justifyContent:'center',
+        width:'42%', display: isMobile ? 'none' : 'flex', flexDirection:'column', justifyContent:'center',
         padding:'60px 52px',
         background:`linear-gradient(150deg, ${C.violetDark} 0%, ${C.violet} 55%, ${C.violetSoft} 100%)`,
         backgroundSize:'200% 200%', animation:'gradShift 8s ease infinite',
@@ -226,7 +228,7 @@ export default function RegisterPage() {
       </div>
 
       {/* Right form */}
-      <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'48px 52px', background:C.surface, overflowY:'auto' }}>
+      <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding: isMobile ? '24px 16px' : '48px 52px', background:C.surface, overflowY:'auto' }}>
         <div style={{ width:'100%', maxWidth:420 }}>
 
           {/* Step indicator */}

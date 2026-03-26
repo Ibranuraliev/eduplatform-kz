@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Star } from 'lucide-react';
+import useMobile from '../hooks/useMobile';
 
 const C = {
   violet:      '#7C3AED',
@@ -26,6 +27,7 @@ export default function LoginPage() {
   const [loading, setLoading]   = useState(false);
   const { login } = useAuth();
   const navigate  = useNavigate();
+  const isMobile  = useMobile();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,7 +71,7 @@ export default function LoginPage() {
 
       {/* Left decorative panel */}
       <div className="login-left" style={{
-        width:'45%', display:'flex', flexDirection:'column', justifyContent:'center',
+        width:'45%', display: isMobile ? 'none' : 'flex', flexDirection:'column', justifyContent:'center',
         padding:'60px 56px',
         background:`linear-gradient(150deg, ${C.violetDark} 0%, ${C.violet} 50%, ${C.violetSoft} 100%)`,
         backgroundSize:'200% 200%', animation:'gradShift 8s ease infinite, slideLeft .7s cubic-bezier(.16,1,.3,1) both',
@@ -119,7 +121,7 @@ export default function LoginPage() {
       {/* Right form panel */}
       <div className="login-right" style={{
         flex:1, display:'flex', alignItems:'center', justifyContent:'center',
-        padding:'48px 56px', background:C.surface,
+        padding: isMobile ? '32px 20px' : '48px 56px', background:C.surface,
       }}>
         <div style={{ width:'100%', maxWidth:380 }}>
 

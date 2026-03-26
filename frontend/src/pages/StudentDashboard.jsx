@@ -4,6 +4,7 @@ import { coursesAPI, groupsAPI, homeworkAPI, paymentsAPI, hrAPI } from '../api';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import api from '../api';
 import WeekCalendar from '../components/WeekCalendar';
+import useMobile from '../hooks/useMobile';
 import { Home, BookOpen, Calendar, FileText, CheckCircle, BarChart2, User, Bell, MessageCircle, LogOut, Target, Clock, RefreshCw, PartyPopper, Frown, XCircle, X, Plus, Calculator, Globe, Landmark, Star, Trophy, Lightbulb, CreditCard, Key, ClipboardList, Eye, MapPin, Users, GraduationCap, UserCheck, TrendingUp, TrendingDown, Sparkles, Flame, AlertTriangle, Info, Shield, Gift, Timer, Upload, Download, Search, Settings, Wrench, Gem, Award, Medal, Banknote, Ticket, Briefcase, Map, ScrollText, Package, Code2, Brain, CalendarDays, Megaphone, BellOff, Zap, FlaskConical, Leaf, Monitor, Sprout, Newspaper, NotepadText, ArrowUp, ArrowDown, Trash2, Pencil, Lock, Unlock, Moon, Sun, CloudSun, Camera, Image, Music, Gamepad2, Activity, Glasses, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Check, Hand, Handshake, ThumbsUp, Dumbbell, Waves, Link, Send, Phone } from 'lucide-react';
 
 const P = {
@@ -147,6 +148,7 @@ export default function StudentDashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const isMobile = useMobile();
 
   useEffect(() => {
   if (location.state?.tab) {
@@ -404,7 +406,7 @@ export default function StudentDashboard() {
       )}
 
       {/* NAVBAR */}
-      <nav style={{ background:P.white,borderBottom:`1px solid ${P.border}`,padding:'0 40px',height:64,display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:100,boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
+      <nav style={{ background:P.white,borderBottom:`1px solid ${P.border}`,padding: isMobile ? '0 12px' : '0 40px',height:64,display:'flex',alignItems:'center',justifyContent:'space-between',position:'sticky',top:0,zIndex:100,boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
         <div onClick={()=>navigate('/')} style={{ fontWeight:900,fontSize:20,cursor:'pointer',color:P.ink }}>
           <span style={{ color:P.violet }}>Edu</span>Platform
           <span style={{ marginLeft:8,fontSize:11,background:P.violet,color:'#fff',borderRadius:6,padding:'2px 7px',fontWeight:800,verticalAlign:'middle' }}>KZ</span>
@@ -419,7 +421,7 @@ export default function StudentDashboard() {
             </button>
 
             {notifOpen && (
-              <div style={{ position:'absolute',top:52,right:0,width:360,background:P.white,border:`1.5px solid ${P.border}`,borderRadius:20,boxShadow:'0 16px 48px rgba(0,0,0,.12)',zIndex:200,overflow:'hidden' }}>
+              <div style={{ position:'absolute',top:52,right:0,width: isMobile ? 'calc(100vw - 24px)' : 360,background:P.white,border:`1.5px solid ${P.border}`,borderRadius:20,boxShadow:'0 16px 48px rgba(0,0,0,.12)',zIndex:200,overflow:'hidden' }}>
                 <div style={{ padding:'16px 20px',borderBottom:`1px solid ${P.border}`,display:'flex',justifyContent:'space-between',alignItems:'center' }}>
                   <span style={{ fontWeight:800,fontSize:15,color:P.ink }}>Уведомления</span>
                   {unreadCount>0 && <button onClick={markAllRead} style={btnO({padding:'5px 12px',fontSize:12})}>Прочитать все</button>}
@@ -448,24 +450,24 @@ export default function StudentDashboard() {
                 : <div style={{ width:'100%',height:'100%',background:tab==='profile'?'rgba(255,255,255,.25)':`linear-gradient(135deg,${avatarColor},${avatarColor}bb)`,display:'flex',alignItems:'center',justifyContent:'center',fontWeight:900,fontSize:13,color:'#fff' }}>{user?.first_name?.[0]||'?'}</div>
               }
             </div>
-            <span style={{ fontWeight:700,fontSize:14,color:tab==='profile'?'#fff':P.ink }}>{user?.first_name} {user?.last_name}</span>
+            {!isMobile && <span style={{ fontWeight:700,fontSize:14,color:tab==='profile'?'#fff':P.ink }}>{user?.first_name} {user?.last_name}</span>}
           </div>
-          <button onClick={()=>navigate('/chat')} style={{ background:P.violetPale, border:`1.5px solid ${P.violetBorder}`, color:P.violet, borderRadius:12, padding:'8px 16px', cursor:'pointer', fontSize:14, fontWeight:700, fontFamily:font, display:'flex',alignItems:'center',gap:6 }}><MessageCircle size={16} /> Чат</button>
-          <button onClick={logout} style={{ background:'none',border:'none',color:P.slate,cursor:'pointer',fontSize:14,fontWeight:600,fontFamily:font,display:'flex',alignItems:'center',gap:6 }}><LogOut size={16} /> Выйти</button>
+          {!isMobile && <button onClick={()=>navigate('/chat')} style={{ background:P.violetPale, border:`1.5px solid ${P.violetBorder}`, color:P.violet, borderRadius:12, padding:'8px 16px', cursor:'pointer', fontSize:14, fontWeight:700, fontFamily:font, display:'flex',alignItems:'center',gap:6 }}><MessageCircle size={16} /> Чат</button>}
+          {!isMobile && <button onClick={logout} style={{ background:'none',border:'none',color:P.slate,cursor:'pointer',fontSize:14,fontWeight:600,fontFamily:font,display:'flex',alignItems:'center',gap:6 }}><LogOut size={16} /> Выйти</button>}
         </div>
       </nav>
 
       <div style={{ display:'flex', minHeight:'calc(100vh - 64px)' }}>
 
         {/* SIDEBAR */}
-        <div style={{ width:240, flexShrink:0, background:P.white, borderRight:`1px solid ${P.border}`, padding:'24px 16px', display:'flex', flexDirection:'column', gap:4, position:'sticky', top:64, height:'calc(100vh - 64px)', overflowY:'auto' }}>
+        <div style={{ width:240, flexShrink:0, background:P.white, borderRight:`1px solid ${P.border}`, padding:'24px 16px', display: isMobile ? 'none' : 'flex', flexDirection:'column', gap:4, position:'sticky', top:64, height:'calc(100vh - 64px)', overflowY:'auto' }}>
           {tabs.map(t=>(
             <button key={t.id} onClick={()=>setTab(t.id)} style={{ display:'flex', alignItems:'center', gap:10, width:'100%', padding:'11px 16px', borderRadius:12, fontWeight:700, fontSize:14, fontFamily:font, cursor:'pointer', textAlign:'left', transition:'all .2s', background:tab===t.id?`linear-gradient(135deg,${P.violet},${P.violetSoft})`:'none', color:tab===t.id?'#fff':P.slate, border:'none', boxShadow:tab===t.id?`0 4px 16px rgba(124,58,237,.2)`:'none' }}>{t.label}</button>
           ))}
         </div>
 
         {/* MAIN CONTENT */}
-        <div style={{ flex:1, padding:'32px 32px', overflowY:'auto', minWidth:0 }}>
+        <div style={{ flex:1, padding: isMobile ? '16px 12px 80px' : '32px 32px', overflowY:'auto', minWidth:0 }}>
         {loading ? (
           <div style={{ textAlign:'center',padding:80,color:P.slate,fontSize:18 }}><div style={{ fontSize:40,marginBottom:16 }}><Clock size={40} color={P.slate} /></div>Загрузка...</div>
         ) : (
@@ -475,7 +477,7 @@ export default function StudentDashboard() {
               <div style={{ display:'flex',flexDirection:'column',gap:20 }}>
 
                 {/* Next session + Attendance */}
-                <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:16 }}>
+                <div style={{ display:'grid',gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',gap:16 }}>
                   <div style={card()}>
                     <div style={{ fontWeight:800,fontSize:15,color:P.ink,marginBottom:14,display:'flex',alignItems:'center',gap:8 }}><Calendar size={18} color={P.violet} /> Ближайшие уроки</div>
                     {schedule.length>0 ? (
@@ -692,7 +694,7 @@ export default function StudentDashboard() {
                 {courses.length===0 ? (
                   <div style={card({textAlign:'center',padding:60})}><div style={{ fontSize:48,marginBottom:14 }}><BookOpen size={48} color={P.slate} /></div><div style={{ color:P.slate,marginBottom:20,fontSize:16 }}>У вас пока нет курсов</div><button onClick={()=>navigate('/')} style={btnP()}>Выбрать курс →</button></div>
                 ) : (
-                  <div style={{ display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))',gap:20 }}>
+                  <div style={{ display:'grid',gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill,minmax(320px,1fr))',gap:20 }}>
                     {courses.map(enr=>{
                       const pct=getCourseProgress(enr);
                       const tc={ent:P.violet,ielts:P.green,sat:'#DC2626'};
@@ -924,7 +926,7 @@ export default function StudentDashboard() {
                 </div>
 
                 {/* KPI cards row */}
-                <div style={{ display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:16 }}>
+                <div style={{ display:'grid',gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(3,1fr)',gap:16 }}>
                   {[
                     { pct:attPct, color:'#7C3AED', gradient:'linear-gradient(135deg,#7C3AED,#8B5CF6)', label:'Посещаемость', sub:`${presentCount||14} из ${totalAtt||16} уроков`, icon:<Calendar size={22} color="#fff"/> },
                     { pct:hwPct,  color:'#059669', gradient:'linear-gradient(135deg,#059669,#10B981)', label:'Домашки сданы', sub:`${hwAccepted} из ${hwTotal} принято`, icon:<CheckCircle size={22} color="#fff"/> },
@@ -1050,7 +1052,7 @@ export default function StudentDashboard() {
                 </div>
 
                 {/* Homework status donut + breakdown */}
-                <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:16 }}>
+                <div style={{ display:'grid',gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',gap:16 }}>
                   {/* Donut chart for hw status */}
                   <div className="prog-card" style={card({animationDelay:'0.3s'})}>
                     <div style={{ fontWeight:800,fontSize:16,color:P.ink,marginBottom:16,display:'flex',alignItems:'center',gap:8 }}><ClipboardList size={18} color={P.violet} /> Статус домашних заданий</div>
@@ -1219,7 +1221,7 @@ export default function StudentDashboard() {
                   <div style={{ flex:1,minWidth:0 }}>
                     <div style={{ fontWeight:900,fontSize:24,color:P.ink,letterSpacing:-0.3,marginBottom:4 }}>{profileForm.first_name} {profileForm.last_name}</div>
                     <div style={{ fontSize:14,color:P.slate,marginBottom:16,display:'flex',alignItems:'center',gap:6 }}><Phone size={14} color={P.slate} /> {profileForm.phone}</div>
-                    <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:10 }}>
+                    <div style={{ display:'grid',gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',gap:10 }}>
                       {[
                         {label:'Роль',          val:'Студент'},
                         {label:'Класс',         val:profileForm.grade ? `${profileForm.grade} класс` : '—'},
@@ -1254,7 +1256,7 @@ export default function StudentDashboard() {
                     </div>
                   )}
 
-                  <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginBottom:16 }}>
+                  <div style={{ display:'grid',gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',gap:16,marginBottom:16 }}>
                     {[
                       {key:'first_name', label:'Имя',      placeholder:'Айгерим'},
                       {key:'last_name',  label:'Фамилия',   placeholder:'Сейткали'},
@@ -1275,7 +1277,7 @@ export default function StudentDashboard() {
                     ))}
                   </div>
 
-                  <div style={{ display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginBottom:20 }}>
+                  <div style={{ display:'grid',gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',gap:16,marginBottom:20 }}>
                     <div>
                       <label style={{ display:'block',fontSize:12,fontWeight:700,color:P.ink,marginBottom:5 }}>Класс</label>
                       <select
@@ -1484,7 +1486,7 @@ export default function StudentDashboard() {
                         <div style={{fontWeight:800,fontSize:16,color:P.ink}}>Подтверди запись</div>
                       </div>
                       <div style={{background:P.violetPale,border:`1.5px solid ${P.violetBorder}`,borderRadius:16,padding:'18px',marginBottom:18}}>
-                        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:10}}>
+                        <div style={{display:'grid',gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',gap:10}}>
                           {[
                             {l:'Имя',v:`${user?.first_name||''} ${user?.last_name||''}`},
                             {l:'Телефон',v:user?.phone||'—'},
@@ -1537,6 +1539,26 @@ export default function StudentDashboard() {
         )}
         </div>
       </div>
+
+      {/* MOBILE BOTTOM TAB BAR */}
+      {isMobile && (
+        <div style={{ position:'fixed',bottom:0,left:0,right:0,height:60,background:P.white,borderTop:`1px solid ${P.border}`,display:'flex',zIndex:300,boxShadow:'0 -4px 16px rgba(0,0,0,.06)' }}>
+          {[
+            {id:'overview', icon:<Home size={20}/>,      label:'Главная'  },
+            {id:'courses',  icon:<BookOpen size={20}/>,   label:'Курсы'    },
+            {id:'schedule', icon:<Calendar size={20}/>,   label:'Расписание'},
+            {id:'homework', icon:<FileText size={20}/>,   label:'Домашки'  },
+            {id:'tests',    icon:<CheckCircle size={20}/>,label:'Тесты'    },
+            {id:'progress', icon:<BarChart2 size={20}/>,  label:'Прогресс' },
+            {id:'profile',  icon:<User size={20}/>,       label:'Профиль'  },
+          ].map(t=>(
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{ flex:1,background:'none',border:'none',cursor:'pointer',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:2,color:tab===t.id?P.violet:P.slate,transition:'color .15s',padding:'4px 0',fontFamily:font }}>
+              {t.icon}
+              <span style={{ fontSize:9,fontWeight:700 }}>{t.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
