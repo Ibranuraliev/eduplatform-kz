@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { coursesAPI } from "../api";
-import { Star, CheckCircle, TrendingUp, Radio, BookOpen, CreditCard, Users, Rocket, Video, ClipboardCheck, BarChart2, UserCheck, Gift, LayoutDashboard } from 'lucide-react';
+import { Star, CreditCard, Users, Rocket, Video, ClipboardCheck, BarChart2, UserCheck, Gift, LayoutDashboard, CheckCircle2 } from 'lucide-react';
 import useMobile from "../hooks/useMobile";
 
 /* ── Tokens ─────────────────────────────────────────── */
@@ -61,136 +60,7 @@ function Counter({ end, suffix = "" }) {
   return <span ref={ref}>{n}{suffix}</span>;
 }
 
-/* ── Subject emoji map ───────────────────────────────── */
-const SUBJECT_EMOJI = {
-  "математика":          "📐",
-  "история казахстана":  "📜",
-  "история":             "📜",
-  "грамотность чтения":  "📖",
-  "грамотность":         "📖",
-  "биология":            "🌿",
-  "химия":               "⚗️",
-  "физика":              "⚡",
-  "география":           "🌍",
-  "английский":          "🇬🇧",
-  "english":             "🇬🇧",
-  "ielts":               "🎯",
-  "sat":                 "🏆",
-  "информатика":         "💻",
-  "литература":          "✍️",
-};
-function getCourseEmoji(course) {
-  const key = (course.subject || course.title || "").toLowerCase();
-  for (const [k, v] of Object.entries(SUBJECT_EMOJI)) {
-    if (key.includes(k)) return v;
-  }
-  if (course.course_type === "ielts") return "🎯";
-  if (course.course_type === "sat")   return "🏆";
-  return "📚";
-}
 
-/* ── Course Card (new style) ─────────────────────────── */
-function CourseCard({ course, navigate }) {
-  const [hoverA, setHoverA] = useState(false);
-  const [hoverB, setHoverB] = useState(false);
-  const map = {
-    ent:   { color: C.violet, bg: C.violetPale, grad: `linear-gradient(135deg, ${C.violet}, ${C.violetSoft})` },
-    ielts: { color: C.green,  bg: C.greenPale,  grad: `linear-gradient(135deg, ${C.green}, #34D399)` },
-    sat:   { color: C.amber,  bg: C.amberPale,  grad: `linear-gradient(135deg, ${C.amber}, #F59E0B)` },
-  };
-  const t = map[course.course_type] || map.ent;
-  const emoji = getCourseEmoji(course);
-
-  const lessonsCount = course.lessons_count ?? course.lessons ?? null;
-  const duration     = course.duration ?? null;
-
-  return (
-    <div style={{
-      background: C.bg,
-      border: `1.5px solid ${C.border}`,
-      borderRadius: 18,
-      padding: "22px 20px 18px",
-      display: "flex", flexDirection: "column",
-      transition: "box-shadow .22s, border-color .22s, transform .22s",
-      boxShadow: "0 2px 10px rgba(0,0,0,.05)",
-    }}
-      onMouseEnter={e => {
-        e.currentTarget.style.borderColor = t.color + "55";
-        e.currentTarget.style.boxShadow   = `0 10px 32px ${t.color}22`;
-        e.currentTarget.style.transform   = "translateY(-3px)";
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.borderColor = C.border;
-        e.currentTarget.style.boxShadow   = "0 2px 10px rgba(0,0,0,.05)";
-        e.currentTarget.style.transform   = "translateY(0)";
-      }}
-    >
-      {/* Icon */}
-      <div style={{
-        width: 54, height: 54, borderRadius: 14,
-        background: t.bg, border: `1.5px solid ${t.color}22`,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: 28, marginBottom: 14, flexShrink: 0,
-        boxShadow: `0 4px 12px ${t.color}18`,
-      }}>{emoji}</div>
-
-      {/* Title */}
-      <h3 style={{
-        fontSize: 15, fontWeight: 700, margin: "0 0 10px",
-        color: C.ink, lineHeight: 1.35, flex: 1,
-      }}>{course.title}</h3>
-
-      {/* Meta: lessons + duration */}
-      <div style={{ display: "flex", gap: 14, marginBottom: 18, flexWrap: "wrap" }}>
-        {lessonsCount != null && (
-          <span style={{ fontSize: 12, color: C.gray, display: "flex", alignItems: "center", gap: 4 }}>
-            <BookOpen size={13} color={t.color} strokeWidth={2.2} />
-            {lessonsCount} уроков
-          </span>
-        )}
-        {duration != null && (
-          <span style={{ fontSize: 12, color: C.gray, display: "flex", alignItems: "center", gap: 4 }}>
-            ⏱ {duration}
-          </span>
-        )}
-        {lessonsCount == null && duration == null && (
-          <span style={{ fontSize: 12, color: C.light }}>Живые уроки · Домашки · Тесты</span>
-        )}
-      </div>
-
-      {/* Two buttons */}
-      <div style={{ display: "flex", gap: 8 }}>
-        <button
-          onClick={() => navigate(`/courses/${course.id}`)}
-          onMouseEnter={() => setHoverA(true)}
-          onMouseLeave={() => setHoverA(false)}
-          style={{
-            flex: 1, padding: "9px 0", borderRadius: 10,
-            border: `1.5px solid ${hoverA ? t.color : C.border}`,
-            background: hoverA ? t.bg : "transparent",
-            color: hoverA ? t.color : C.gray,
-            fontWeight: 600, fontSize: 13, cursor: "pointer",
-            fontFamily: font, transition: "all .2s",
-          }}
-        >Подробнее</button>
-        <button
-          onClick={() => navigate("/register")}
-          onMouseEnter={() => setHoverB(true)}
-          onMouseLeave={() => setHoverB(false)}
-          style={{
-            flex: 1, padding: "9px 0", borderRadius: 10,
-            border: "none",
-            background: hoverB ? t.grad : `linear-gradient(135deg, ${C.violet}, ${C.violetSoft})`,
-            color: "#fff",
-            fontWeight: 700, fontSize: 13, cursor: "pointer",
-            fontFamily: font, transition: "all .2s",
-            boxShadow: hoverB ? `0 6px 18px ${t.color}40` : "none",
-          }}
-        >Оставить заявку</button>
-      </div>
-    </div>
-  );
-}
 
 /* ── FAQ Item ─────────────────────────────────────────── */
 function FAQItem({ q, a }) {
@@ -223,12 +93,9 @@ export default function CoursesPage() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const isMobile = useMobile();
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    coursesAPI.list().then(r => setCourses(r.data)).catch(() => {}).finally(() => setLoading(false));
     const fn = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", fn);
     return () => window.removeEventListener("scroll", fn);
@@ -324,7 +191,8 @@ export default function CoursesPage() {
         </div>
 
         <div className="nav-links" style={{ display: "flex", gap: 28, alignItems: "center" }}>
-          {[["Курсы","#courses"],["Как учиться","#how"],["Отзывы","#reviews"],["FAQ","#faq"]].map(([l,h],i) => (
+          <a href="/catalog" className="nav-link" style={{ color: C.gray, fontSize: 14, textDecoration: "none", fontWeight: 500, transition: "color .2s" }}>Курсы</a>
+          {[["Тарифы","#pricing"],["Как учиться","#how"],["Отзывы","#reviews"],["FAQ","#faq"]].map(([l,h],i) => (
             <a key={i} href={h} className="nav-link" style={{ color: C.gray, fontSize: 14, textDecoration: "none", fontWeight: 500, transition: "color .2s" }}>{l}</a>
           ))}
           <a href="/apply-teacher" className="nav-link" style={{ color: C.gray, fontSize: 14, textDecoration: "none", fontWeight: 500, transition: "color .2s" }}>Вакансии</a>
@@ -400,7 +268,7 @@ export default function CoursesPage() {
                 style={{ color:"#fff", border:"none", borderRadius:14, padding:"14px 36px", fontWeight:800, fontSize:16, cursor:"pointer", fontFamily:font }}>
                 Начать бесплатно
               </button>
-              <button onClick={() => document.getElementById("courses")?.scrollIntoView({ behavior:"smooth" })}
+              <button onClick={() => navigate("/catalog")}
                 className="btn-outline"
                 style={{ background:"#fff", color:C.ink, border:`1.5px solid ${C.border}`, borderRadius:14, padding:"13px 28px", fontWeight:600, fontSize:15, cursor:"pointer", fontFamily:font }}>
                 Смотреть курсы
@@ -426,55 +294,57 @@ export default function CoursesPage() {
             </div>
           </div>
 
-          {/* Right — cards */}
-          <div className="hero-cards" style={{ display: isMobile ? "none" : "flex", flexDirection:"column", gap:14 }}>
-            {/* Live card */}
+          {/* Right — photo */}
+          <div className="hero-cards" style={{
+            display: isMobile ? "none" : "block",
+            position: "relative", borderRadius: 24, overflow: "hidden",
+            height: 460,
+            boxShadow: `0 20px 60px rgba(124,58,237,.18)`,
+          }}>
+            <img
+              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=560&h=460&fit=crop&q=80"
+              alt="Студенты готовятся к экзамену"
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+            {/* Overlay gradient */}
             <div style={{
-              background:"#fff", borderRadius:20, padding:24,
-              boxShadow:`0 8px 40px rgba(124,58,237,.12)`,
-              border:`1.5px solid rgba(124,58,237,.15)`,
-              animation:"floatY 4s ease-in-out infinite",
+              position: "absolute", inset: 0,
+              background: "linear-gradient(to top, rgba(0,0,0,.45) 0%, transparent 55%)",
+            }} />
+            {/* Floating badge — bottom */}
+            <div style={{
+              position: "absolute", bottom: 20, left: 20, right: 20,
+              background: "rgba(255,255,255,.96)",
+              backdropFilter: "blur(14px)",
+              borderRadius: 16, padding: "14px 18px",
+              display: "flex", alignItems: "center", gap: 12,
+              boxShadow: "0 8px 28px rgba(0,0,0,.14)",
             }}>
-              <div style={{ display:"flex", justifyContent:"space-between", marginBottom:14 }}>
-                <div style={{ fontWeight:700, fontSize:15, color:C.ink }}>Идёт урок</div>
-                <div style={{ background:"#22C55E", color:"#fff", borderRadius:20, padding:"3px 12px", fontSize:11, fontWeight:800, display:"inline-flex", alignItems:"center", gap:5 }}><Radio size={11} strokeWidth={2.5}/> LIVE</div>
+              <div style={{
+                width: 42, height: 42, borderRadius: 12,
+                background: C.greenPale,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 20, flexShrink: 0,
+              }}>🏆</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: 700, fontSize: 14, color: C.ink }}>Айгерим сдала ЕНТ на 120!</div>
+                <div style={{ color: C.gray, fontSize: 12, marginTop: 2 }}>после 4 месяцев подготовки</div>
               </div>
-              <div style={{ color:C.gray, fontSize:13, marginBottom:14, fontWeight:500 }}>ЕНТ Математика · Тригонометрия</div>
-              <div style={{ background:C.violetPale, borderRadius:10, padding:"12px 14px", borderLeft:`3px solid ${C.violet}` }}>
-                <div style={{ fontSize:12, color:C.violet, fontWeight:700, marginBottom:4 }}>Преподаватель:</div>
-                <div style={{ fontSize:13, color:C.ink, lineHeight:1.5 }}>«sin²x + cos²x = 1 — эта формула нужна в каждом задании!»</div>
+              <div style={{ display: "flex", gap: 2, flexShrink: 0 }}>
+                {[1,2,3,4,5].map(i => <Star key={i} size={13} fill="#F59E0B" stroke="#F59E0B" />)}
               </div>
             </div>
-
-            {/* Score mini cards */}
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-              <div style={{ background:C.violetPale, borderRadius:16, padding:20, animation:"floatY 4s .5s ease-in-out infinite", border:`1px solid ${C.violet}20` }}>
-                <div style={{ fontSize:38, fontWeight:800, color:C.violet, letterSpacing:-1 }}>120</div>
-                <div style={{ fontSize:12, color:C.gray, marginTop:3, fontWeight:500 }}>Средний балл ЕНТ</div>
-                <div style={{ marginTop:8, fontSize:11, color:"#22C55E", fontWeight:700 }}><TrendingUp size={11} style={{display:'inline',marginRight:3}}/> +12 за месяц</div>
-              </div>
-              <div style={{ background:C.greenPale, borderRadius:16, padding:20, animation:"floatY 4s 1s ease-in-out infinite", border:`1px solid ${C.green}20` }}>
-                <div style={{ fontSize:38, fontWeight:800, color:C.green, letterSpacing:-1 }}>7.5</div>
-                <div style={{ fontSize:12, color:C.gray, marginTop:3, fontWeight:500 }}>Средний IELTS</div>
-                <div style={{ marginTop:8, fontSize:11, color:"#22C55E", fontWeight:700 }}><TrendingUp size={11} style={{display:'inline',marginRight:3}}/> +0.5 за курс</div>
-              </div>
-            </div>
-
-            {/* Homework */}
+            {/* Top badge — students count */}
             <div style={{
-              background:"#fff", borderRadius:16, padding:"16px 18px",
-              border:`1.5px solid ${C.border}`,
-              display:"flex", alignItems:"center", gap:14,
-              animation:"floatY 4s 1.5s ease-in-out infinite",
+              position: "absolute", top: 20, right: 20,
+              background: "rgba(255,255,255,.94)",
+              backdropFilter: "blur(10px)",
+              borderRadius: 12, padding: "8px 14px",
+              display: "flex", alignItems: "center", gap: 8,
+              boxShadow: "0 4px 16px rgba(0,0,0,.1)",
             }}>
-              <div style={{ width:42, height:42, borderRadius:12, background:C.greenPale, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                <CheckCircle size={20} color={C.green} strokeWidth={2.5} />
-              </div>
-              <div style={{ flex:1 }}>
-                <div style={{ fontWeight:700, fontSize:14, color:C.ink }}>Домашка принята!</div>
-                <div style={{ color:C.gray, fontSize:12, marginTop:2 }}>«Все 10 задач верны. Отличная работа!»</div>
-              </div>
-              <div style={{ background:C.violetPale, color:C.violet, borderRadius:8, padding:"4px 10px", fontSize:12, fontWeight:700, flexShrink:0, display:"inline-flex", alignItems:"center", gap:4 }}>+10 <Star size={12} fill={C.violet} stroke={C.violet} /></div>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#22C55E", display: "inline-block" }} />
+              <span style={{ fontSize: 13, fontWeight: 700, color: C.ink }}>500+ студентов онлайн</span>
             </div>
           </div>
         </div>
@@ -543,80 +413,156 @@ export default function CoursesPage() {
         </div>
       </section>
 
-      {/* ── COURSES ── */}
-      <section id="courses" style={{ padding: isMobile ? "60px 20px" : "96px 48px", background:C.bg }}>
-        <div style={{ maxWidth:1100, margin:"0 auto" }}>
-          <div style={{ textAlign:"center", marginBottom:56 }}>
-            <span style={{ fontSize:12, fontWeight:700, letterSpacing:1.2, textTransform:"uppercase", color:C.violet, background:C.violetPale, borderRadius:6, padding:"4px 12px" }}>Программы</span>
-            <h2 style={{ fontSize:"clamp(30px,4vw,46px)", fontWeight:800, margin:"16px 0 0", letterSpacing:-1.2, color:C.ink }}>Выбери свой курс</h2>
-            <p style={{ color:C.gray, fontSize:15, marginTop:14, lineHeight:1.7 }}>Подготовка к ЕНТ, IELTS и SAT с нуля до результата</p>
+      {/* ── PRICING ── */}
+      <section id="pricing" style={{ padding: isMobile ? "60px 20px" : "96px 48px", background: C.bg }}>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 56 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: C.violet, background: C.violetPale, borderRadius: 6, padding: "4px 12px" }}>Тарифы</span>
+            <h2 style={{ fontSize: "clamp(28px,4vw,44px)", fontWeight: 800, margin: "16px 0 0", letterSpacing: -1.2, color: C.ink }}>Выберите тариф</h2>
+            <p style={{ color: C.gray, fontSize: 15, marginTop: 12, lineHeight: 1.7 }}>Один тариф — все предметы. Платите только за нужное количество.</p>
           </div>
 
-          {loading ? (
-            <div style={{ textAlign:"center", padding:80, color:C.gray }}>Загрузка курсов…</div>
-          ) : courses.length === 0 ? (
-            <div style={{ textAlign:"center", padding:80, color:C.gray }}>Курсы скоро появятся</div>
-          ) : (() => {
-            const CATEGORY_META = {
-              ent:   { label: "ПОДГОТОВКА К ЕНТ",   color: C.violet, bg: C.violetPale },
-              ielts: { label: "ПОДГОТОВКА К IELTS",  color: C.green,  bg: C.greenPale  },
-              sat:   { label: "ПОДГОТОВКА К SAT",    color: C.amber,  bg: C.amberPale  },
-            };
-            const ORDER = ["ent", "ielts", "sat"];
-            const grouped = {};
-            courses.forEach(c => {
-              const k = c.course_type || "ent";
-              if (!grouped[k]) grouped[k] = [];
-              grouped[k].push(c);
-            });
-            const categories = ORDER.filter(k => grouped[k]?.length);
-            // append unknown types
-            Object.keys(grouped).forEach(k => { if (!ORDER.includes(k)) categories.push(k); });
+          {/* Plans grid */}
+          {(() => {
+            const FEATURES = [
+              "Онлайн уроки 2 раза в неделю",
+              "Записи всех уроков",
+              "Вся необходимая теория для ЕНТ",
+              "Регулярное ДЗ с проверкой",
+              "Личный куратор",
+              "Пробные тесты ежемесячные",
+              "Система жизней",
+            ];
+            const plans = [
+              {
+                name: "Про",
+                badge: null,
+                color: C.violet,
+                bg: C.violetPale,
+                grad: `linear-gradient(135deg, ${C.violet}, ${C.violetSoft})`,
+                prices: [
+                  { subjects: "1 предмет",  price: "14 580", old: "18 000" },
+                  { subjects: "2 предмета", price: "26 244", old: "32 400" },
+                  { subjects: "3 предмета", price: "38 475", old: "47 500" },
+                  { subjects: "4 предмета", price: "48 600", old: "60 000" },
+                ],
+              },
+              {
+                name: "Премиум",
+                badge: "+",
+                color: C.amber,
+                bg: C.amberPale,
+                grad: `linear-gradient(135deg, #F59E0B, ${C.amber})`,
+                prices: [
+                  { subjects: "1 предмет",  price: "17 496", old: "21 600" },
+                  { subjects: "2 предмета", price: "31 493", old: "38 880" },
+                  { subjects: "3 предмета", price: "46 170", old: "57 000" },
+                  { subjects: "4 предмета", price: "58 320", old: "72 000" },
+                ],
+              },
+            ];
             return (
-              <div style={{ display:"flex", flexDirection:"column", gap:52 }}>
-                {categories.map(key => {
-                  const meta = CATEGORY_META[key] || { label: key.toUpperCase(), color: C.violet, bg: C.violetPale };
-                  const list = grouped[key];
-                  return (
-                    <div key={key}>
-                      {/* Category header */}
-                      <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:24 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 20 }}>
+                {plans.map((plan, pi) => (
+                  <div key={pi} style={{
+                    background: "#fff",
+                    border: `1.5px solid ${C.border}`,
+                    borderRadius: 20,
+                    padding: "32px 28px",
+                    position: "relative",
+                    overflow: "hidden",
+                    boxShadow: "0 4px 20px rgba(0,0,0,.06)",
+                  }}>
+                    {/* Plan name */}
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
+                      <h3 style={{ fontSize: 22, fontWeight: 800, color: C.ink, margin: 0 }}>{plan.name}</h3>
+                      {plan.badge && (
                         <span style={{
-                          fontSize:11, fontWeight:800, letterSpacing:1.6,
-                          textTransform:"uppercase", color: meta.color,
-                          background: meta.bg, borderRadius:8,
-                          padding:"5px 14px", border:`1.5px solid ${meta.color}22`,
-                        }}>{meta.label}</span>
-                        <div style={{ flex:1, height:1, background: C.border }}/>
-                        <span style={{ fontSize:12, color:C.light, whiteSpace:"nowrap" }}>{list.length} {list.length === 1 ? "курс" : list.length < 5 ? "курса" : "курсов"}</span>
-                      </div>
-                      {/* Cards grid */}
-                      <div style={{
-                        display:"grid",
-                        gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(260px, 1fr))",
-                        gap:16,
-                      }}>
-                        {list.map(c => <CourseCard key={c.id} course={c} navigate={navigate}/>)}
-                      </div>
+                          fontSize: 22, fontWeight: 900, color: C.amber,
+                          background: C.amberPale, borderRadius: 8,
+                          padding: "0 8px", lineHeight: "32px", display: "inline-block",
+                        }}>{plan.badge}</span>
+                      )}
                     </div>
-                  );
-                })}
+
+                    {/* Features */}
+                    <div style={{ marginBottom: 24 }}>
+                      {FEATURES.map((f, fi) => (
+                        <div key={fi} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                          <div style={{
+                            width: 18, height: 18, borderRadius: "50%",
+                            background: plan.color, flexShrink: 0,
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                          }}>
+                            <CheckCircle2 size={12} color="#fff" strokeWidth={3} />
+                          </div>
+                          <span style={{ fontSize: 14, color: C.ink }}>{f}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Divider */}
+                    <div style={{ height: 1, background: C.border, marginBottom: 20 }} />
+
+                    {/* Prices */}
+                    <div style={{ marginBottom: 24 }}>
+                      {plan.prices.map((p, i) => (
+                        <div key={i} style={{
+                          display: "flex", justifyContent: "space-between", alignItems: "center",
+                          marginBottom: 10,
+                        }}>
+                          <span style={{ fontSize: 14, color: C.gray }}>{p.subjects}:</span>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <span style={{ fontSize: 15, fontWeight: 700, color: plan.color }}>{p.price} ₸/м</span>
+                            <span style={{ fontSize: 12, color: C.light, textDecoration: "line-through" }}>{p.old} тг/м</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Gift badge */}
+                    <div style={{
+                      background: plan.bg,
+                      borderRadius: 10, padding: "8px 14px",
+                      display: "inline-flex", alignItems: "center", gap: 6,
+                      marginBottom: 20, fontSize: 13, fontWeight: 600, color: plan.color,
+                      border: `1px solid ${plan.color}20`,
+                    }}>
+                      🎁 Грамотность чтения в подарок
+                    </div>
+
+                    {/* CTA button */}
+                    <div>
+                      <button
+                        onClick={() => navigate("/register")}
+                        style={{
+                          width: "100%", padding: "13px 0",
+                          background: plan.grad,
+                          color: "#fff", border: "none", borderRadius: 12,
+                          fontWeight: 700, fontSize: 15, cursor: "pointer",
+                          fontFamily: font, transition: "opacity .2s",
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.opacity = "0.88"; }}
+                        onMouseLeave={e => { e.currentTarget.style.opacity = "1"; }}
+                      >Получить консультацию</button>
+                    </div>
+                  </div>
+                ))}
               </div>
             );
           })()}
 
-          <div style={{ textAlign:"center", marginTop:60 }}>
-            <p style={{ color:C.gray, marginBottom:14, fontSize:14 }}>Не нашёл нужный курс?</p>
-            <a href="https://t.me/eduplatform_kz" target="_blank" rel="noreferrer" style={{
-              display:"inline-flex", alignItems:"center", gap:8,
-              background:"#0088CC", color:"#fff",
-              borderRadius:12, padding:"12px 28px",
-              fontWeight:700, fontSize:14, textDecoration:"none", fontFamily:font,
-              transition:"opacity .2s",
+          {/* Link to catalog */}
+          <div style={{ textAlign: "center", marginTop: 40 }}>
+            <button onClick={() => navigate("/catalog")} style={{
+              background: "none", border: `1.5px solid ${C.border}`,
+              borderRadius: 12, padding: "11px 28px",
+              fontWeight: 600, fontSize: 14, color: C.gray,
+              cursor: "pointer", fontFamily: font, transition: "all .2s",
             }}
-              onMouseEnter={e => e.currentTarget.style.opacity="0.85"}
-              onMouseLeave={e => e.currentTarget.style.opacity="1"}
-            >Написать в Telegram</a>
+              onMouseEnter={e => { e.currentTarget.style.borderColor = C.violet; e.currentTarget.style.color = C.violet; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.gray; }}
+            >Смотреть все курсы →</button>
           </div>
         </div>
       </section>

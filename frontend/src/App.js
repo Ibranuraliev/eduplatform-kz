@@ -10,6 +10,7 @@ import ApplyTeacherPage from './pages/ApplyTeacherPage';
 import TrialLessonPage from './pages/TrialLessonPage';
 import CoursesPage from './pages/CoursesPage';
 import CoursePage from './pages/CoursePage';
+import CourseCatalogPage from './pages/CourseCatalogPage';
 import LessonPage from './pages/LessonPage';
 import VacanciesPage from './pages/VacanciesPage';
 import ChatPage from './pages/ChatPage';
@@ -34,6 +35,7 @@ function RoleRouter() {
         <Route path="/lessons/:id" element={<Navigate to="/login" />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/apply-teacher" element={<ApplyTeacherPage />} />
+        <Route path="/catalog" element={<CourseCatalogPage />} />
         <Route path="/trial" element={<TrialLessonPage />} />
         <Route path="/vacancies" element={<VacanciesPage />} />
         <Route path="*" element={<Navigate to="/" />} />
@@ -47,6 +49,7 @@ function RoleRouter() {
       <Route path="/" element={<CoursesPage />} />
       <Route path="/courses/:id" element={<CoursePage />} />
       <Route path="/lessons/:id" element={<LessonPage />} />
+      <Route path="/catalog" element={<CourseCatalogPage />} />
       <Route path="/apply-teacher" element={<ApplyTeacherPage />} />
       <Route path="/vacancies" element={<VacanciesPage />} />
       <Route path="/chat" element={<ChatPage />} />
