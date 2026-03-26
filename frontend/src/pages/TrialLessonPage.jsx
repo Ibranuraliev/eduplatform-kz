@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../api';
+import useMobile from '../hooks/useMobile';
 import { Target, BookOpen, CheckCircle, Zap, AlertTriangle, Clock, Calculator, Globe, FlaskConical, Leaf } from 'lucide-react';
 
 const P = {
@@ -43,6 +44,7 @@ const GRADES = ['9 класс','10 класс','11 класс','Выпускни
 const STEPS = ['Контакты', 'Предмет', 'Детали', 'Готово'];
 
 export default function TrialLessonPage() {
+  const isMobile = useMobile();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -102,7 +104,7 @@ export default function TrialLessonPage() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap'); *{box-sizing:border-box;}`}</style>
 
       {/* Navbar */}
-      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding:'0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
+      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding:isMobile ? '0 16px' : '0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
         <div onClick={() => navigate('/')} style={{ fontWeight:900, fontSize:20, cursor:'pointer', color:P.ink }}>
           <span style={{ color:P.violet }}>Edu</span>Platform
           <span style={{ marginLeft:8, fontSize:11, background:P.violet, color:'#fff', borderRadius:6, padding:'2px 7px', fontWeight:800, verticalAlign:'middle' }}>KZ</span>
@@ -112,7 +114,7 @@ export default function TrialLessonPage() {
         </button>
       </nav>
 
-      <div style={{ maxWidth:600, margin:'0 auto', padding:'40px 24px' }}>
+      <div style={{ maxWidth:600, margin:'0 auto', padding: isMobile ? '24px 16px' : '40px 24px' }}>
 
         {step < 3 ? (
           <>
@@ -156,7 +158,7 @@ export default function TrialLessonPage() {
             </div>
 
             {/* Card */}
-            <div style={{ background:P.white, borderRadius:24, border:`1.5px solid ${P.border}`, padding:'32px', boxShadow:'0 8px 40px rgba(124,58,237,.08)' }}>
+            <div style={{ background:P.white, borderRadius:24, border:`1.5px solid ${P.border}`, padding:isMobile ? '20px 16px' : '32px', boxShadow:'0 8px 40px rgba(124,58,237,.08)' }}>
 
               {errors.general && (
                 <div style={{ background:'#FEF2F2', color:P.red, borderRadius:12, padding:'12px 16px', fontSize:13, fontWeight:600, marginBottom:20, display:'flex', alignItems:'center', gap:8 }}>
@@ -192,10 +194,10 @@ export default function TrialLessonPage() {
 
                   <div>
                     <label style={{ display:'block', fontSize:13, fontWeight:700, color:P.ink, marginBottom:8 }}>Класс *</label>
-                    <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+                    <div style={{ display:'flex', flexWrap:'wrap', gap: isMobile ? 6 : 8 }}>
                       {GRADES.map(g => (
                         <button key={g} onClick={() => set('grade', g)}
-                          style={{ padding:'9px 18px', borderRadius:10, fontWeight:700, fontSize:13, fontFamily:font, cursor:'pointer',
+                          style={{ padding:isMobile ? '7px 12px' : '9px 18px', borderRadius:10, fontWeight:700, fontSize:isMobile ? 12 : 13, fontFamily:font, cursor:'pointer',
                             background: form.grade === g ? P.violet : P.surface,
                             color: form.grade === g ? '#fff' : P.slate,
                             border: `1.5px solid ${form.grade === g ? 'transparent' : P.border}`,
@@ -217,7 +219,7 @@ export default function TrialLessonPage() {
                     <BookOpen size={20} color={P.ink} />
                     Выбери предмет
                   </div>
-                  <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+                  <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(2,1fr)', gap:10 }}>
                     {SUBJECTS.map(s => {
                       const Icon = s.icon;
                       return (
@@ -314,7 +316,7 @@ export default function TrialLessonPage() {
             </div>
 
             {/* Benefits */}
-            <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:12, marginTop:24 }}>
+            <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(3,1fr)', gap:12, marginTop:24 }}>
               {[
                 { icon:CheckCircle, title:'Бесплатно', text:'Без оплаты и обязательств' },
                 { icon:Zap, title:'Быстро', text:'Позвоним в течение дня' },

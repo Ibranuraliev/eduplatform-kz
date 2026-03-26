@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { coursesAPI, homeworkAPI } from '../api';
 import { useAuth } from '../context/AuthContext';
+import useMobile from '../hooks/useMobile';
 import { CheckCircle, Hourglass, PartyPopper, BookOpen, Clock, Rocket, ClipboardList, Video, FileText, RotateCw, Frown, Film, Archive, Music, Image, ChevronLeft, Smartphone, MessageCircle, Home, Map } from 'lucide-react';
 
 /* ── Design tokens ── */
@@ -176,6 +177,7 @@ function TestSection({ test, onComplete }) {
 
 /* ══ Main LessonPage ══ */
 export default function LessonPage() {
+  const isMobile = useMobile();
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -279,7 +281,7 @@ export default function LessonPage() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap'); *{box-sizing:border-box;} ::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-thumb{background:${P.violetSoft};border-radius:2px;}`}</style>
 
       {/* NAVBAR */}
-      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding:'0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
+      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding: isMobile ? '0 16px' : '0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
         <div style={{ display:'flex', alignItems:'center', gap:12 }}>
           <button onClick={()=>navigate(-1)} style={{ background:P.surface, border:`1px solid ${P.border}`, borderRadius:10, width:36, height:36, cursor:'pointer', fontSize:18, display:'flex', alignItems:'center', justifyContent:'center' }}><ChevronLeft size={18} /></button>
           <div onClick={()=>navigate('/')} style={{ fontWeight:900, fontSize:20, cursor:'pointer', color:P.ink }}>

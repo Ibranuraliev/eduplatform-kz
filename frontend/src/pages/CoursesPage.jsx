@@ -276,28 +276,28 @@ export default function CoursesPage() {
             <a key={i} href={h} className="nav-link" style={{ color: C.gray, fontSize: 14, textDecoration: "none", fontWeight: 500, transition: "color .2s" }}>{l}</a>
           ))}
           <a href="/apply-teacher" className="nav-link" style={{ color: C.gray, fontSize: 14, textDecoration: "none", fontWeight: 500, transition: "color .2s" }}>Вакансии</a>
-
-          {user ? (
-            <div style={{ display:"flex", gap:10 }}>
-              <button onClick={() => navigate("/dashboard")} className="btn-primary"
-                style={{ color:"#fff", border:"none", borderRadius:10, padding:"9px 22px", fontWeight:700, fontSize:14, cursor:"pointer", fontFamily:font }}>
-                Кабинет
-              </button>
-              <button onClick={logout} style={{ background:"none", border:"none", color: scrolled ? C.gray : "rgba(255,255,255,.75)", cursor:"pointer", fontSize:14, fontFamily:font }}>Выйти</button>
-            </div>
-          ) : (
-            <div style={{ display:"flex", gap:10 }}>
-              <button onClick={() => navigate("/login")} className="btn-outline"
-                  style={{ background:"none", border:`1.5px solid ${C.border}`, borderRadius:10, padding:"8px 20px", fontWeight:600, fontSize:14, color:C.ink, cursor:"pointer", fontFamily:font }}>
-                Войти
-              </button>
-              <button onClick={() => navigate("/register")} className="btn-primary"
-                style={{ color:"#fff", border:"none", borderRadius:10, padding:"9px 22px", fontWeight:700, fontSize:14, cursor:"pointer", fontFamily:font }}>
-                Начать →
-              </button>
-            </div>
-          )}
         </div>
+
+        {user ? (
+          <div style={{ display:"flex", gap:10 }}>
+            <button onClick={() => navigate("/dashboard")} className="btn-primary"
+              style={{ color:"#fff", border:"none", borderRadius:10, padding:"9px 22px", fontWeight:700, fontSize:14, cursor:"pointer", fontFamily:font }}>
+              Кабинет
+            </button>
+            <button onClick={logout} style={{ background:"none", border:"none", color: scrolled ? C.gray : "rgba(255,255,255,.75)", cursor:"pointer", fontSize:14, fontFamily:font }}>Выйти</button>
+          </div>
+        ) : (
+          <div style={{ display:"flex", gap:10 }}>
+            <button onClick={() => navigate("/login")} className="btn-outline"
+                style={{ background:"none", border:`1.5px solid ${C.border}`, borderRadius:10, padding:"8px 20px", fontWeight:600, fontSize:14, color:C.ink, cursor:"pointer", fontFamily:font }}>
+              Войти
+            </button>
+            <button onClick={() => navigate("/register")} className="btn-primary"
+              style={{ color:"#fff", border:"none", borderRadius:10, padding:"9px 22px", fontWeight:700, fontSize:14, cursor:"pointer", fontFamily:font }}>
+              Начать →
+            </button>
+          </div>
+        )}
       </nav>
 
       {/* ── HERO ── */}

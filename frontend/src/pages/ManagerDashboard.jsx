@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import useMobile from '../hooks/useMobile';
 import VacancyManager from '../components/VacancyManager';
 import { FileText, Phone, BookOpen, Calendar, Mail, CheckCircle, X, Eye, Briefcase, Clock, Download, AlertTriangle, BarChart2, LogOut, Home, Users, CreditCard, Settings, Wrench } from 'lucide-react';
 
@@ -300,6 +301,7 @@ function RefundCard({ refund, onAction }) {
 
 /* ── Main Component ── */
 export default function ManagerDashboard() {
+  const isMobile = useMobile();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -382,7 +384,7 @@ export default function ManagerDashboard() {
       )}
 
       {/* NAVBAR */}
-      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding:'0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
+      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding: isMobile ? '0 16px' : '0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
         <div onClick={() => navigate('/')} style={{ fontWeight:900, fontSize:20, cursor:'pointer', color:P.ink }}>
           <span style={{ color:P.violet }}>Edu</span>Platform
           <span style={{ marginLeft:8, fontSize:11, background:P.violet, color:'#fff', borderRadius:6, padding:'2px 7px', fontWeight:800, verticalAlign:'middle' }}>KZ</span>

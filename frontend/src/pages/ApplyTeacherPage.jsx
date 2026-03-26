@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AlertTriangle, Check, Paperclip, Send, PartyPopper, ClipboardList, Phone, CheckCircle, GraduationCap, Banknote, Clock, BookOpen, Loader, Rocket, User } from 'lucide-react';
+import useMobile from '../hooks/useMobile';
 import api from '../api';
 
 /* ── Design tokens ── */
@@ -181,6 +182,7 @@ function Steps({ current }) {
 
 /* ── Main Component ── */
 export default function ApplyTeacherPage() {
+  const isMobile = useMobile();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
@@ -275,7 +277,7 @@ export default function ApplyTeacherPage() {
     return (
       <div style={{ minHeight:'100vh', background:'#F8F6FF', fontFamily:font, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:24 }}>
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap'); *{box-sizing:border-box;}`}</style>
-        <div style={{ background:P.white, borderRadius:28, padding:'56px 48px', maxWidth:480, width:'100%', textAlign:'center', boxShadow:'0 16px 56px rgba(124,58,237,.12)', border:`1.5px solid ${P.violetBorder}` }}>
+        <div style={{ background:P.white, borderRadius:28, padding:isMobile ? '40px 24px' : '56px 48px', maxWidth:480, width:'100%', textAlign:'center', boxShadow:'0 16px 56px rgba(124,58,237,.12)', border:`1.5px solid ${P.violetBorder}` }}>
           <div style={{ fontSize:72, marginBottom:20, display:'flex', justifyContent:'center' }}><PartyPopper size={72} color="#7C3AED"/></div>
           <h2 style={{ fontSize:26, fontWeight:900, color:P.ink, margin:'0 0 12px', letterSpacing:-0.5 }}>Заявка отправлена!</h2>
           <p style={{ color:P.slate, fontSize:15, lineHeight:1.7, margin:'0 0 32px' }}>
@@ -315,7 +317,7 @@ export default function ApplyTeacherPage() {
       `}</style>
 
       {/* Navbar */}
-      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding:'0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
+      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding: isMobile ? '0 16px' : '0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
         <Link to="/" style={{ fontWeight:900, fontSize:20, textDecoration:'none', color:P.ink }}>
           <span style={{ color:P.violet }}>Edu</span>Platform
           <span style={{ marginLeft:8, fontSize:11, background:P.violet, color:'#fff', borderRadius:6, padding:'2px 7px', fontWeight:800, verticalAlign:'middle' }}>KZ</span>
@@ -326,10 +328,10 @@ export default function ApplyTeacherPage() {
         </div>
       </nav>
 
-      <div style={{ maxWidth:680, margin:'0 auto', padding:'48px 24px 80px' }}>
+      <div style={{ maxWidth:680, margin:'0 auto', padding: isMobile ? '32px 16px 80px' : '48px 24px 80px' }}>
 
         {/* Page header */}
-        <div style={{ textAlign:'center', marginBottom:40 }}>
+        <div style={{ textAlign:'center', marginBottom: isMobile ? 28 : 40 }}>
           <div style={{ display:'inline-flex', alignItems:'center', gap:8, background:P.violetPale, border:`1.5px solid ${P.violetBorder}`, borderRadius:100, padding:'6px 18px', marginBottom:18 }}>
             <User size={16} color="#7C3AED"/>
             <span style={{ fontSize:13, fontWeight:700, color:P.violet }}>Стать преподавателем</span>
@@ -343,7 +345,7 @@ export default function ApplyTeacherPage() {
         </div>
 
         {/* Benefits row */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:12, marginBottom:40 }}>
+        <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(3,1fr)', gap:12, marginBottom:40 }}>
           {[
             { icon:<Banknote size={28}/>, title:'Стабильный доход',   desc:'Оплата за каждый проведённый урок' },
             { icon:<Clock size={28}/>,    title:'Удобный график',      desc:'Выбирай время сам, работай из дома' },
@@ -358,7 +360,7 @@ export default function ApplyTeacherPage() {
         </div>
 
         {/* Form card */}
-        <div style={{ background:P.white, borderRadius:24, border:`1.5px solid ${P.border}`, padding:'36px 40px', boxShadow:'0 8px 40px rgba(124,58,237,.08)' }}>
+        <div style={{ background:P.white, borderRadius:24, border:`1.5px solid ${P.border}`, padding: isMobile ? '24px 16px' : '36px 40px', boxShadow:'0 8px 40px rgba(124,58,237,.08)' }}>
 
           <Steps current={step} />
 
@@ -386,7 +388,7 @@ export default function ApplyTeacherPage() {
                 {errors.full_name && <div style={{ color:P.red, fontSize:12, marginTop:5, fontWeight:600 }}><AlertTriangle size={14} style={{ display: 'inline-block', marginRight: 4 }} />{errors.full_name}</div>}
               </div>
 
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:16 }}>
+              <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap:16 }}>
                 <div>
                   <label style={{ display:'block', fontSize:13, fontWeight:700, color:P.ink, marginBottom:6 }}>
                     Телефон <span style={{ color:P.red }}>*</span>
@@ -432,7 +434,7 @@ export default function ApplyTeacherPage() {
                 <label style={{ display:'block', fontSize:13, fontWeight:700, color:P.ink, marginBottom:6 }}>
                   Опыт преподавания (лет) <span style={{ color:P.red }}>*</span>
                 </label>
-                <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
+                <div style={{ display:'flex', gap: isMobile ? 8 : 10, flexWrap:'wrap' }}>
                   {['0', '1', '2', '3', '4', '5+'].map(v => {
                     const val = v === '5+' ? '5' : v;
                     const active = experience === val;
@@ -442,8 +444,8 @@ export default function ApplyTeacherPage() {
                         type="button"
                         onClick={() => { setExperience(val); if (errors.experience) setErrors(p => ({ ...p, experience: '' })); }}
                         style={{
-                          width: 60, height: 60, borderRadius: 14,
-                          fontWeight: 900, fontSize: 18, fontFamily: font,
+                          width: isMobile ? 48 : 60, height: isMobile ? 48 : 60, borderRadius: 14,
+                          fontWeight: 900, fontSize: isMobile ? 14 : 18, fontFamily: font,
                           cursor: 'pointer', transition: 'all .2s',
                           background: active ? P.violet : P.surface,
                           color: active ? '#fff' : P.slate,
@@ -512,7 +514,7 @@ export default function ApplyTeacherPage() {
               {/* Summary */}
               <div style={{ background:P.violetPale, border:`1.5px solid ${P.violetBorder}`, borderRadius:16, padding:'18px 20px' }}>
                 <div style={{ fontWeight:800, fontSize:13, color:P.violet, marginBottom:10 }}><ClipboardList size={13} style={{display:'inline-flex',verticalAlign:'middle',marginRight:6}}/>Проверь данные заявки</div>
-                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+                <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap:8 }}>
                   {[
                     ['ФИО', form.full_name],
                     ['Телефон', form.phone],

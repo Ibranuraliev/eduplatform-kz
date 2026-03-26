@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import useMobile from '../hooks/useMobile';
 import { Home, Users, BookOpen, CreditCard, RotateCw, ClipboardList, Bell, Settings, BarChart2, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, X, Clock, Search, Phone, Trophy, Gift } from 'lucide-react';
 
 /* ── Design tokens ── */
@@ -97,6 +98,7 @@ function PayStatus({ status }) {
 
 /* ═══════════════════════════════════════════════ */
 export default function AdminDashboard() {
+  const isMobile = useMobile();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -216,7 +218,7 @@ export default function AdminDashboard() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap'); *{box-sizing:border-box;} ::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-thumb{background:${P.violetSoft};border-radius:2px;}`}</style>
 
       {/* NAVBAR */}
-      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding:'0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
+      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding: isMobile ? '0 16px' : '0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
         <div onClick={()=>navigate('/')} style={{ fontWeight:900, fontSize:20, cursor:'pointer', color:P.ink }}>
           <span style={{ color:P.violet }}>Edu</span>Platform
           <span style={{ marginLeft:8, fontSize:11, background:P.violet, color:'#fff', borderRadius:6, padding:'2px 7px', fontWeight:800, verticalAlign:'middle' }}>KZ</span>
@@ -262,14 +264,14 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Stats grid */}
-                <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:16 }}>
+                <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap:16 }}>
                   <StatCard icon={<Users size={30}/>} value={stats.total_students ?? users.filter(u=>u.role==='student').length} label="Студентов" color={P.violet}/>
                   <StatCard icon={<Users size={30}/>} value={stats.total_teachers ?? users.filter(u=>u.role==='teacher').length} label="Преподавателей" color={P.green}/>
                   <StatCard icon={<BookOpen size={30}/>} value={stats.total_groups ?? groups.length} label="Групп" color={P.orange}/>
                   <StatCard icon={<CreditCard size={30}/>} value={stats.total_revenue ? `${Number(stats.total_revenue).toLocaleString()}₸` : `${payments.filter(p=>p.status==='paid').length} опл.`} label="Выручка / Оплат" color={P.blue}/>
                 </div>
 
-                <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:16 }}>
+                <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap:16 }}>
                   <StatCard icon={<Clock size={30}/>} value={payments.filter(p=>p.status==='pending').length} label="Ожид. оплат" color={P.orange} sub="требуют подтверждения"/>
                   <StatCard icon={<RotateCw size={30}/>} value={pendingRefunds} label="Заявок на возврат" color={P.red} sub="ожидают решения"/>
                   <StatCard icon={<ClipboardList size={30}/>} value={pendingHR} label="Заявок учителей" color={P.blue} sub="ожидают рассмотрения"/>
@@ -279,7 +281,7 @@ export default function AdminDashboard() {
                 {/* Quick links to Django admin */}
                 <div style={card()}>
                   <div style={{ fontWeight:800, fontSize:15, color:P.ink, marginBottom:16 }}><Settings size={15} style={{display:'inline-flex',verticalAlign:'middle',marginRight:6}}/>Быстрые ссылки (Django Admin)</div>
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))', gap:10 }}>
+                  <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill,minmax(220px,1fr))', gap:10 }}>
                     {[
                       { icon:<Users size={16}/>, label:'Пользователи', url:'/admin/users/user/' },
                       { icon:<BookOpen size={16}/>, label:'Курсы', url:'/admin/courses/course/' },
@@ -343,7 +345,7 @@ export default function AdminDashboard() {
             {tab==='groups' && (
               <div>
                 <div style={{ fontWeight:900, fontSize:22, color:P.ink, marginBottom:20, letterSpacing:-0.5 }}>Группы</div>
-                <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))', gap:16 }}>
+                <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill,minmax(320px,1fr))', gap:16 }}>
                   {groups.length===0 ? (
                     <div style={card({textAlign:'center',padding:60,gridColumn:'1/-1'})}><div style={{fontSize:48,marginBottom:14}}><BookOpen size={48}/></div><div style={{color:P.slate}}>Нет групп</div></div>
                   ) : groups.map(g => {
@@ -360,7 +362,7 @@ export default function AdminDashboard() {
                         <div style={{ fontWeight:900, fontSize:16, color:P.ink, marginBottom:4 }}>{g.name}</div>
                         {g.course?.title && <div style={{ color:P.slate, fontSize:13, marginBottom:12 }}><BookOpen size={13} style={{display:'inline-flex',verticalAlign:'middle',marginRight:4}}/>{g.course.title}</div>}
                         {g.teacher && <div style={{ color:P.slate, fontSize:13, marginBottom:12 }}><Users size={13} style={{display:'inline-flex',verticalAlign:'middle',marginRight:4}}/>{g.teacher.first_name} {g.teacher.last_name}</div>}
-                        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+                        <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap:8 }}>
                           <div style={{ background:P.violetPale, borderRadius:10, padding:'10px', textAlign:'center', border:`1px solid ${P.violetBorder}` }}>
                             <div style={{ fontWeight:900, fontSize:20, color:P.violet }}>{studentCount}</div>
                             <div style={{ fontSize:11, color:P.slate, fontWeight:600 }}>Студентов</div>
@@ -386,7 +388,7 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Summary */}
-                <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12, marginBottom:20 }}>
+                <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap:12, marginBottom:20 }}>
                   {[
                     { label:'Всего',     val:payments.length,                              color:P.ink    },
                     { label:'Оплачено',  val:payments.filter(p=>p.status==='paid').length, color:P.green  },

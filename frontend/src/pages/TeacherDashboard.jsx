@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { groupsAPI, homeworkAPI, coursesAPI } from '../api';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import useMobile from '../hooks/useMobile';
 import WeekCalendar from '../components/WeekCalendar';
 import { Users, Calendar, FileText, CheckCircle, BarChart2, Paperclip, MessageCircle, User, LogOut, Hand, Loader, Plus, Eye, X, RotateCw, Gift, Clock, AlertTriangle, Download, Upload, Link, Home, ArrowLeft, BookOpen, Pencil, Banknote, Lock, Key, Image } from 'lucide-react';
 
@@ -147,6 +148,7 @@ function StudentsModal({ group, onClose }) {
 
 /* ══ Main Component ══ */
 export default function TeacherDashboard() {
+  const isMobile = useMobile();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -365,7 +367,7 @@ export default function TeacherDashboard() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap'); *{box-sizing:border-box;} ::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-thumb{background:${P.violetSoft};border-radius:2px;}`}</style>
 
       {/* NAVBAR */}
-      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding:'0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
+      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding: isMobile ? '0 16px' : '0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
         <div onClick={()=>navigate('/')} style={{ fontWeight:900, fontSize:20, cursor:'pointer', color:P.ink }}>
           <span style={{ color:P.violet }}>Edu</span>Platform
           <span style={{ marginLeft:8, fontSize:11, background:P.violet, color:'#fff', borderRadius:6, padding:'2px 7px', fontWeight:800, verticalAlign:'middle' }}>KZ</span>
@@ -413,7 +415,7 @@ export default function TeacherDashboard() {
                 </div>
 
                 {/* Stats */}
-                <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:16 }}>
+                <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap:16 }}>
                   {[
                     { val:groups.length,   label:'Групп',              icon:<Users size={28}/>, color:P.violet },
                     { val:schedule.filter(s=>!s.is_conducted).length, label:'Предстоящих уроков', icon:<Calendar size={28}/>, color:P.blue },
@@ -493,7 +495,7 @@ export default function TeacherDashboard() {
                     <button onClick={openCreateGroup} style={{ ...btnP({padding:'12px 28px', fontSize:14}), marginTop:16 }}><Plus size={14} style={{display:'inline-flex',verticalAlign:'middle',marginRight:4}}/>Создать первую группу</button>
                   </div>
                 ) : (
-                  <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(340px,1fr))', gap:20 }}>
+                  <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill,minmax(340px,1fr))', gap:20 }}>
                     {groups.map(g => {
                       const studentCount = g.enrollments?.filter(e=>e.status==='active').length || 0;
                       const typeColor = { ent:P.violet, ielts:P.green, sat:P.red };
@@ -508,7 +510,7 @@ export default function TeacherDashboard() {
                           <h3 style={{ fontWeight:900, fontSize:18, margin:'0 0 6px', color:P.ink }}>{g.name}</h3>
                           {g.course?.title && <div style={{ color:P.slate, fontSize:13, marginBottom:16 }}><BookOpen size={13} style={{display:'inline-flex',verticalAlign:'middle',marginRight:6}}/>{g.course.title}</div>}
 
-                          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:18 }}>
+                          <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap:10, marginBottom:18 }}>
                             <div style={{ background:P.violetPale, borderRadius:12, padding:'12px', textAlign:'center', border:`1px solid ${P.violetBorder}` }}>
                               <div style={{ fontWeight:900, fontSize:22, color:P.violet }}>{studentCount}</div>
                               <div style={{ fontSize:11, color:P.slate, fontWeight:600, marginTop:2 }}>Студентов</div>
@@ -563,7 +565,7 @@ export default function TeacherDashboard() {
                 {/* Form */}
                 <div style={card()}>
                   <div style={{fontWeight:800,fontSize:15,color:P.ink,marginBottom:18}}><Pencil size={15} style={{display:'inline-flex',verticalAlign:'middle',marginRight:6}}/>Редактировать</div>
-                  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+                  <div style={{display:'grid',gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',gap:16}}>
                     {[
                       {key:'first_name', label:'Имя',      placeholder:'Иван'},
                       {key:'last_name',  label:'Фамилия',  placeholder:'Иванов'},

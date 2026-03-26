@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { chatAPI, groupsAPI } from '../api';
 import { useAuth } from '../context/AuthContext';
+import useMobile from '../hooks/useMobile';
 import { MessageCircle, GraduationCap, User, Hand, Check, Send } from 'lucide-react';
 
 const P = {
@@ -31,6 +32,7 @@ function formatTime(dt) {
 }
 
 export default function ChatPage() {
+  const isMobile = useMobile();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -44,6 +46,7 @@ export default function ChatPage() {
   const [teachers, setTeachers] = useState([]);   // for student
   const [students, setStudents] = useState([]);    // for teacher
   const [showContactList, setShowContactList] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const messagesEndRef = useRef(null);
   const pollRef = useRef(null);
 
@@ -108,6 +111,7 @@ export default function ChatPage() {
   const openConversation = (conv) => {
     setActiveConv(conv);
     loadMessages(conv.id);
+    if (isMobile) setShowChat(true);
     // Mark as read in sidebar
     setConversations(prev => prev.map(c =>
       c.id === conv.id ? { ...c, unread_count: 0 } : c
@@ -190,25 +194,26 @@ export default function ChatPage() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap'); *{box-sizing:border-box;}`}</style>
 
       {/* Navbar */}
-      <nav style={{ background: P.white, borderBottom: `1px solid ${P.border}`, padding: '0 32px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <nav style={{ background: P.white, borderBottom: `1px solid ${P.border}`, padding: isMobile ? '0 12px' : '0 32px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 8 : 12 }}>
           <button onClick={() => navigate(-1)} style={{ background: P.surface, border: `1px solid ${P.border}`, borderRadius: 10, width: 36, height: 36, cursor: 'pointer', fontSize: 18 }}>←</button>
-          <div onClick={() => navigate('/')} style={{ fontWeight: 900, fontSize: 20, cursor: 'pointer', color: P.ink }}>
+          <div onClick={() => navigate('/')} style={{ fontWeight: 900, fontSize: isMobile ? 16 : 20, cursor: 'pointer', color: P.ink }}>
             <span style={{ color: P.violet }}>Edu</span>Platform
-            <span style={{ marginLeft: 8, fontSize: 11, background: P.violet, color: '#fff', borderRadius: 6, padding: '2px 7px', fontWeight: 800, verticalAlign: 'middle' }}>KZ</span>
+            <span style={{ marginLeft: 4, fontSize: 10, background: P.violet, color: '#fff', borderRadius: 4, padding: '1px 5px', fontWeight: 800, verticalAlign: 'middle', display: isMobile ? 'none' : 'inline-block' }}>KZ</span>
           </div>
-          <span style={{ marginLeft: 8, fontWeight: 800, fontSize: 16, color: P.ink, display:'inline-flex', alignItems:'center', gap:6 }}><MessageCircle size={16}/>Чат</span>
+          <span style={{ marginLeft: isMobile ? 4 : 8, fontWeight: 800, fontSize: isMobile ? 13 : 16, color: P.ink, display:'inline-flex', alignItems:'center', gap: isMobile ? 4 : 6 }}><MessageCircle size={isMobile ? 14 : 16}/>Чат</span>
         </div>
-        <button onClick={() => navigate('/dashboard')} style={{ background: P.violetPale, color: P.violet, border: `1.5px solid ${P.violetBorder}`, borderRadius: 12, padding: '8px 20px', fontWeight: 700, fontSize: 14, fontFamily: font, cursor: 'pointer' }}>
-          Мой кабинет
+        <button onClick={() => navigate('/dashboard')} style={{ background: P.violetPale, color: P.violet, border: `1.5px solid ${P.violetBorder}`, borderRadius: 12, padding: '8px 16px', fontWeight: 700, fontSize: isMobile ? 12 : 14, fontFamily: font, cursor: 'pointer', whiteSpace: 'nowrap' }}>
+          {isMobile ? 'Кабинет' : 'Мой кабинет'}
         </button>
       </nav>
 
       {/* Body */}
-      <div style={{ flex: 1, display: 'flex', maxWidth: 1100, width: '100%', margin: '24px auto', gap: 16, padding: '0 16px', height: 'calc(100vh - 112px)' }}>
+      <div style={{ flex: 1, display: 'flex', maxWidth: 1100, width: '100%', margin: isMobile ? '0 auto' : '24px auto', gap: isMobile ? 0 : 16, padding: isMobile ? 0 : '0 16px', height: isMobile ? 'calc(100vh - 64px)' : 'calc(100vh - 112px)' }}>
 
         {/* Sidebar */}
-        <div style={{ width: 300, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {(!isMobile || !showChat) && (
+        <div style={{ width: isMobile ? '100%' : 300, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 8, padding: isMobile ? '8px 12px' : 0 }}>
 
           {/* Start new chat — student writes to teacher */}
           {user.role === 'student' && teachers.length > 0 && (
@@ -286,9 +291,11 @@ export default function ChatPage() {
             })}
           </div>
         </div>
+        )}
 
         {/* Chat window */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: P.white, borderRadius: 16, border: `1.5px solid ${P.border}`, overflow: 'hidden' }}>
+        {(!isMobile || showChat) && (
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: P.white, borderRadius: isMobile ? 0 : 16, border: isMobile ? 'none' : `1.5px solid ${P.border}`, overflow: 'hidden', width: isMobile ? '100%' : 'auto' }}>
           {!activeConv ? (
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: P.muted, flexDirection: 'column', gap: 12 }}>
               <div style={{ display:'flex', justifyContent:'center', color: P.muted }}><MessageCircle size={48}/></div>
@@ -298,6 +305,9 @@ export default function ChatPage() {
             <>
               {/* Chat header */}
               <div style={{ padding: '16px 20px', borderBottom: `1px solid ${P.border}`, display: 'flex', alignItems: 'center', gap: 12, background: P.violetPale }}>
+                {isMobile && (
+                  <button onClick={() => setShowChat(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, marginRight: 4, padding: 0 }}>←</button>
+                )}
                 <div style={{ width: 40, height: 40, borderRadius: '50%', background: `linear-gradient(135deg,${P.violet},${P.violetSoft})`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 900, fontSize: 16 }}>
                   {getOtherPerson(activeConv)?.first_name?.[0] || '?'}
                 </div>
@@ -359,6 +369,7 @@ export default function ChatPage() {
             </>
           )}
         </div>
+        )}
       </div>
     </div>
   );

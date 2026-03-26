@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Briefcase, Clock, Home, TrendingUp, Search, ChevronUp, ChevronDown, Rocket, Banknote, FileText, CheckCircle, Gift, BookOpen } from 'lucide-react';
+import useMobile from '../hooks/useMobile';
 import api from '../api';
 
 const P = {
@@ -37,6 +38,7 @@ const TYPE_COLORS = {
 };
 
 export default function VacanciesPage() {
+  const isMobile = useMobile();
   const [vacancies, setVacancies] = useState([]);
   const [loading, setLoading]     = useState(true);
   const [selected, setSelected]   = useState(null);
@@ -61,7 +63,7 @@ export default function VacanciesPage() {
       `}</style>
 
       {/* Navbar */}
-      <nav style={{ background: P.white, borderBottom: `1px solid ${P.border}`, padding: '0 40px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 2px 12px rgba(124,58,237,.06)' }}>
+      <nav style={{ background: P.white, borderBottom: `1px solid ${P.border}`, padding: isMobile ? '0 16px' : '0 40px', height: 64, display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 2px 12px rgba(124,58,237,.06)' }}>
         <Link to="/" style={{ fontWeight: 900, fontSize: 20, textDecoration: 'none', color: P.ink }}>
           <span style={{ color: P.violet }}>Edu</span>Platform
           <span style={{ marginLeft: 8, fontSize: 11, background: P.violet, color: '#fff', borderRadius: 6, padding: '2px 7px', fontWeight: 800, verticalAlign: 'middle' }}>KZ</span>
@@ -72,7 +74,7 @@ export default function VacanciesPage() {
       </nav>
 
       {/* Hero */}
-      <div style={{ background: `linear-gradient(135deg, ${P.violet} 0%, ${P.violetDark} 100%)`, padding: '60px 40px', textAlign: 'center', color: '#fff', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ background: `linear-gradient(135deg, ${P.violet} 0%, ${P.violetDark} 100%)`, padding: isMobile ? '40px 20px' : '60px 40px', textAlign: 'center', color: '#fff', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -60, right: -60, width: 300, height: 300, borderRadius: '50%', background: 'rgba(255,255,255,.05)' }} />
         <div style={{ position: 'absolute', bottom: -40, left: -40, width: 200, height: 200, borderRadius: '50%', background: 'rgba(255,255,255,.05)' }} />
         <div style={{ position: 'relative' }}>
@@ -83,12 +85,12 @@ export default function VacanciesPage() {
           <h1 style={{ fontSize: 'clamp(28px,5vw,48px)', fontWeight: 900, margin: '0 0 16px', letterSpacing: -1, lineHeight: 1.1 }}>
             Присоединяйся к команде
           </h1>
-          <p style={{ fontSize: 16, opacity: 0.85, maxWidth: 500, margin: '0 auto', lineHeight: 1.7 }}>
+          <p style={{ fontSize: isMobile ? 14 : 16, opacity: 0.85, maxWidth: 500, margin: '0 auto', lineHeight: 1.7 }}>
             Помогай казахстанским студентам поступить в лучшие университеты. Работай удалённо с гибким графиком.
           </p>
 
           {/* Benefits */}
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 32, marginTop: 36, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: isMobile ? 16 : 32, marginTop: 36, flexWrap: 'wrap' }}>
             {[
               { icon: 'Banknote', label: 'Достойная оплата' },
               { icon: 'Clock', label: 'Гибкий график' },
@@ -224,7 +226,7 @@ export default function VacanciesPage() {
 
                 {/* Expanded details */}
                 {selected?.id === v.id && (
-                  <div style={{ marginTop: 24, paddingTop: 24, borderTop: `1.5px solid ${P.border}`, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+                  <div style={{ marginTop: 24, paddingTop: 24, borderTop: `1.5px solid ${P.border}`, display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 20 }}>
                     {v.requirements && (
                       <div>
                         <div style={{ fontWeight: 800, fontSize: 14, color: P.ink, marginBottom: 8 }}><CheckCircle size={14} style={{display:'inline-flex',verticalAlign:'middle',marginRight:6}}/>Требования</div>
@@ -245,7 +247,7 @@ export default function VacanciesPage() {
         )}
 
         {/* CTA bottom */}
-        <div style={{ marginTop: 48, background: `linear-gradient(135deg,${P.violet},${P.violetDark})`, borderRadius: 24, padding: '40px', textAlign: 'center', color: '#fff' }}>
+        <div style={{ marginTop: 48, background: `linear-gradient(135deg,${P.violet},${P.violetDark})`, borderRadius: 24, padding: isMobile ? '28px 20px' : '40px', textAlign: 'center', color: '#fff' }}>
           <Rocket size={32} style={{ marginBottom: 12, display: 'inline-block' }} />
           <div style={{ fontWeight: 900, fontSize: 20, marginBottom: 8 }}>Не нашёл подходящую вакансию?</div>
           <div style={{ opacity: 0.85, fontSize: 14, marginBottom: 24 }}>Оставь заявку — мы свяжемся когда появится нужная позиция</div>

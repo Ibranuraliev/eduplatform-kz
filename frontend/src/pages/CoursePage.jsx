@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { coursesAPI, paymentsAPI } from '../api';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
+import useMobile from '../hooks/useMobile';
 import { ChevronDown, Lock, Play, Video, FileText, CheckCircle, Unlock, Hourglass, Mail, Circle, Flame, User, Users, Calendar, Clock, Lightbulb, X, Frown, Check, ClipboardList, BookOpen, Target, Star, MapPin, Globe, GraduationCap, Banknote, ShoppingCart, Key, CreditCard, Film, Plane, MessageCircle, Link as LinkIcon, Plus } from 'lucide-react';
 
 /* ── Design tokens ── */
@@ -323,6 +324,7 @@ function GroupPickerModal({ courseId, groups, loading, alreadyInGroup, onClose, 
 
 /* ═══════════════════════════ MAIN ════════════════════════ */
 export default function CoursePage() {
+  const isMobile = useMobile();
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -412,7 +414,7 @@ const openGroupPicker = async () => {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap'); *{box-sizing:border-box;} ::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-thumb{background:${P.violetSoft};border-radius:2px;}`}</style>
 
       {/* ── NAVBAR ── */}
-      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding:'0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
+      <nav style={{ background:P.white, borderBottom:`1px solid ${P.border}`, padding: isMobile ? '0 16px' : '0 40px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', position:'sticky', top:0, zIndex:100, boxShadow:'0 2px 12px rgba(124,58,237,.06)' }}>
         <Link to="/" style={{ fontWeight:900, fontSize:20, textDecoration:'none', color:P.ink }}>
           <span style={{ color:P.violet }}>Edu</span>Platform
           <span style={{ marginLeft:8, fontSize:11, background:P.violet, color:'#fff', borderRadius:6, padding:'2px 7px', fontWeight:800, verticalAlign:'middle' }}>KZ</span>
@@ -430,7 +432,7 @@ const openGroupPicker = async () => {
       </nav>
 
       {/* ── HERO ── */}
-      <div style={{ background:`linear-gradient(135deg, ${accentColor} 0%, ${P.violetDark} 100%)`, padding:'56px 40px 80px', position:'relative', overflow:'hidden' }}>
+      <div style={{ background:`linear-gradient(135deg, ${accentColor} 0%, ${P.violetDark} 100%)`, padding: isMobile ? '40px 20px 60px' : '56px 40px 80px', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', top:-60, right:-60, width:300, height:300, borderRadius:'50%', background:'rgba(255,255,255,.06)', pointerEvents:'none' }}/>
         <div style={{ position:'absolute', bottom:-40, left:'30%', width:200, height:200, borderRadius:'50%', background:'rgba(255,255,255,.04)', pointerEvents:'none' }}/>
         <div style={{ maxWidth:1100, margin:'0 auto', position:'relative' }}>
@@ -450,7 +452,7 @@ const openGroupPicker = async () => {
           <h1 style={{ fontSize:'clamp(24px,3.5vw,42px)', fontWeight:900, color:'#fff', margin:'0 0 16px', letterSpacing:-1, lineHeight:1.1, maxWidth:700 }}>
             {course.title}
           </h1>
-          <p style={{ color:'rgba(255,255,255,.8)', fontSize:17, lineHeight:1.7, maxWidth:620, margin:'0 0 28px' }}>
+          <p style={{ color:'rgba(255,255,255,.8)', fontSize: isMobile ? 14 : 17, lineHeight:1.7, maxWidth:620, margin:'0 0 28px' }}>
             {course.description}
           </p>
 
@@ -496,7 +498,7 @@ const openGroupPicker = async () => {
           {course.what_you_learn?.length > 0 && (
             <div style={{ background:P.white, borderRadius:20, border:`1.5px solid ${P.border}`, padding:'28px 32px' }}>
               <h2 style={{ fontWeight:900, fontSize:20, color:P.ink, margin:'0 0 20px', letterSpacing:-0.3, display:'flex', alignItems:'center', gap:8 }}><Target size={24} /> Чему вы научитесь</h2>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+              <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap:10 }}>
                 {course.what_you_learn.map((item, i) => (
                   <div key={i} style={{ display:'flex', gap:10, alignItems:'flex-start' }}>
                     <Check size={16} color={P.green} style={{ flexShrink:0, marginTop:1 }} />
@@ -528,8 +530,8 @@ const openGroupPicker = async () => {
           {course.teacher && (
             <div style={{ background:P.white, borderRadius:20, border:`1.5px solid ${P.border}`, padding:'28px 32px' }}>
               <h2 style={{ fontWeight:900, fontSize:20, color:P.ink, margin:'0 0 20px', letterSpacing:-0.3, display:'flex', alignItems:'center', gap:8 }}><User size={24} /> Преподаватель</h2>
-              <div style={{ display:'flex', gap:18, alignItems:'flex-start' }}>
-                <div style={{ width:64, height:64, borderRadius:'50%', background:`linear-gradient(135deg,${P.violet},${P.violetSoft})`, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:900, fontSize:24, flexShrink:0 }}>
+              <div style={{ display:'flex', gap: isMobile ? 12 : 18, alignItems:'flex-start', flexDirection: isMobile ? 'column' : 'row' }}>
+                <div style={{ width: isMobile ? 48 : 64, height: isMobile ? 48 : 64, borderRadius:'50%', background:`linear-gradient(135deg,${P.violet},${P.violetSoft})`, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:900, fontSize: isMobile ? 18 : 24, flexShrink:0 }}>
                   {course.teacher.first_name?.[0] || '?'}
                 </div>
                 <div>
