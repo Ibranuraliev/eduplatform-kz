@@ -125,6 +125,17 @@ export default function LoginPage() {
       }}>
         <div style={{ width:'100%', maxWidth:380 }}>
 
+          {/* Back button */}
+          <button onClick={() => navigate(-1)} style={{
+            background:'none', border:`1.5px solid ${C.border}`, borderRadius:10,
+            padding:'8px 14px', cursor:'pointer', fontSize:13, fontWeight:600,
+            color:C.gray, fontFamily:font, display:'inline-flex', alignItems:'center', gap:6,
+            marginBottom:28, transition:'all .2s',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor=C.violet; e.currentTarget.style.color=C.violet; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.color=C.gray; }}
+          >← Назад</button>
+
           <div style={{ marginBottom:36 }}>
             <h1 style={{ fontSize:26, fontWeight:800, color:C.ink, letterSpacing:-0.8, marginBottom:8 }}>
               Вход в аккаунт

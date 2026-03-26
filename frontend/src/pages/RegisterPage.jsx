@@ -83,7 +83,16 @@ export default function RegisterPage() {
         setStep(3);
       } else { setStep(4); }
     } catch (err) {
-      setError(err.response?.data?.phone?.[0] || err.response?.data?.error || 'Ошибка регистрации. Попробуйте снова.');
+      if (err.response?.status === 429) {
+        setError('Слишком много попыток. Подождите немного и попробуйте снова.');
+      } else {
+        const d = err.response?.data;
+        setError(
+          d?.phone?.[0] || d?.error || d?.detail || d?.email?.[0] || d?.username?.[0] ||
+          (d && typeof d === 'object' ? Object.values(d).flat().filter(v => typeof v === 'string').join('. ') : null) ||
+          'Ошибка регистрации. Попробуйте снова.'
+        );
+      }
     } finally { setLoading(false); }
   };
 
@@ -230,6 +239,17 @@ export default function RegisterPage() {
       {/* Right form */}
       <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding: isMobile ? '24px 16px' : '48px 52px', background:C.surface, overflowY:'auto' }}>
         <div style={{ width:'100%', maxWidth:420 }}>
+
+          {/* Back button */}
+          <button onClick={() => navigate(-1)} style={{
+            background:'none', border:`1.5px solid ${C.border}`, borderRadius:10,
+            padding:'8px 14px', cursor:'pointer', fontSize:13, fontWeight:600,
+            color:C.gray, fontFamily:font, display:'inline-flex', alignItems:'center', gap:6,
+            marginBottom:24, transition:'all .2s',
+          }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor=C.violet; e.currentTarget.style.color=C.violet; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor=C.border; e.currentTarget.style.color=C.gray; }}
+          >← Назад</button>
 
           {/* Step indicator */}
           <div style={{ marginBottom:32 }}>

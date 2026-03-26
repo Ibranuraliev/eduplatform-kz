@@ -4,6 +4,7 @@ from .models import User, TelegramAuthNonce
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
+    email = serializers.EmailField(required=False, allow_blank=True, default='')
     referred_by_code = serializers.CharField(
         required=False, allow_blank=True, write_only=True
     )
@@ -17,6 +18,19 @@ class RegisterSerializer(serializers.ModelSerializer):
             'consent_personal_data', 'consent_privacy_policy',
             'referred_by_code'
         ]
+
+    def validate_phone(self, value):
+        """Normalize phone first, then check uniqueness on the normalized value."""
+        from .views import normalize_phone
+        normalized = normalize_phone(value)
+        # Check uniqueness for the normalized form (DRF's auto UniqueValidator only
+        # checks the raw submitted value, so we cover the +7 vs 7 mismatch case)
+        if self.instance is None:  # only on create
+            if User.objects.filter(phone=normalized).exists():
+                raise serializers.ValidationError(
+                    'Пользователь с таким номером уже зарегистрирован.'
+                )
+        return normalized
 
     def create(self, validated_data):
         import random, string
@@ -37,10 +51,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             if not User.objects.filter(referral_code=code).exists():
                 break
 
-        # Normalize phone: always store with leading +
-        from .views import normalize_phone
-        if 'phone' in validated_data:
-            validated_data['phone'] = normalize_phone(validated_data['phone'])
+        # phone is already normalized by validate_phone()
         validated_data['username'] = validated_data['phone']
         user = User(**validated_data)
         user.set_password(password)
