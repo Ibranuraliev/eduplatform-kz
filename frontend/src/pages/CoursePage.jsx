@@ -473,23 +473,23 @@ const openGroupPicker = async () => {
       </div>
 
       {/* ── MAIN GRID ── */}
-      <div style={{ maxWidth:1100, margin:'40px auto 0', padding:'0 24px 60px', display:'grid', gridTemplateColumns:'1fr 340px', gap:28, alignItems:'start' }}>
+      <div style={{ maxWidth:1100, margin: isMobile ? '16px auto 0' : '40px auto 0', padding: isMobile ? '0 12px 80px' : '0 24px 60px', display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 340px', gap: isMobile ? 16 : 28, alignItems:'start' }}>
 
         {/* ── LEFT COLUMN ── */}
         <div style={{ display:'flex', flexDirection:'column', gap:24 }}>
 
           {/* Enrolled banner */}
           {isEnrolled && (
-            <div style={{ background:`linear-gradient(135deg,${P.green},#047857)`, borderRadius:20, padding:'20px 28px', color:'#fff', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:16 }}>
+            <div style={{ background:`linear-gradient(135deg,${P.green},#047857)`, borderRadius:20, padding: isMobile ? '16px 18px' : '20px 28px', color:'#fff', display:'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent:'space-between', alignItems: isMobile ? 'flex-start' : 'center', gap:14 }}>
               <div>
-                <div style={{ fontWeight:900, fontSize:17, marginBottom:4, display:'flex', alignItems:'center', gap:8 }}><CheckCircle size={20} /> Вы записаны на этот курс!</div>
-                <div style={{ fontSize:14, color:'rgba(255,255,255,.8)' }}>Все уроки, материалы и задания доступны</div>
+                <div style={{ fontWeight:900, fontSize: isMobile ? 15 : 17, marginBottom:4, display:'flex', alignItems:'center', gap:8 }}><CheckCircle size={18} /> Вы записаны на этот курс!</div>
+                <div style={{ fontSize:13, color:'rgba(255,255,255,.8)' }}>Все уроки, материалы и задания доступны</div>
               </div>
-              <div style={{ display:'flex', gap:10 }}>
-                <button onClick={openGroupPicker} style={{ background:'rgba(255,255,255,.15)', color:'#fff', border:'2px solid rgba(255,255,255,.5)', borderRadius:12, padding:'10px 22px', fontWeight:800, fontSize:14, fontFamily:font, cursor:'pointer', whiteSpace:'nowrap', display:'flex', alignItems:'center', gap:8 }}>
-                  <Calendar size={16} /> Выбрать группу
+              <div style={{ display:'flex', gap:8, width: isMobile ? '100%' : 'auto' }}>
+                <button onClick={openGroupPicker} style={{ background:'rgba(255,255,255,.15)', color:'#fff', border:'2px solid rgba(255,255,255,.5)', borderRadius:12, padding:'9px 14px', fontWeight:800, fontSize: isMobile ? 13 : 14, fontFamily:font, cursor:'pointer', flex: isMobile ? 1 : 'none', display:'flex', alignItems:'center', justifyContent:'center', gap:6 }}>
+                  <Calendar size={15} /> Выбрать группу
                 </button>
-                <button onClick={()=>navigate('/dashboard')} style={{ background:'rgba(255,255,255,.2)', color:'#fff', border:'2px solid rgba(255,255,255,.5)', borderRadius:12, padding:'10px 22px', fontWeight:800, fontSize:14, fontFamily:font, cursor:'pointer', whiteSpace:'nowrap' }}>
+                <button onClick={()=>navigate('/dashboard')} style={{ background:'rgba(255,255,255,.2)', color:'#fff', border:'2px solid rgba(255,255,255,.5)', borderRadius:12, padding:'9px 14px', fontWeight:800, fontSize: isMobile ? 13 : 14, fontFamily:font, cursor:'pointer', flex: isMobile ? 1 : 'none', whiteSpace:'nowrap' }}>
                   Мой кабинет →
                 </button>
               </div>
@@ -560,7 +560,7 @@ const openGroupPicker = async () => {
         </div>
 
         {/* ── RIGHT SIDEBAR ── */}
-        <div style={{ position:'sticky', top:80, display:'flex', flexDirection:'column', gap:16 }}>
+        <div style={{ position: isMobile ? 'static' : 'sticky', top:80, display:'flex', flexDirection:'column', gap:16, order: isMobile ? -1 : 0 }}>
 
           {/* Pricing card */}
           <div style={{ background:P.white, borderRadius:24, border:`1.5px solid ${P.border}`, overflow:'hidden', boxShadow:'0 8px 40px rgba(124,58,237,.10)' }}>
