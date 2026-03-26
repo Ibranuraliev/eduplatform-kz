@@ -61,79 +61,132 @@ function Counter({ end, suffix = "" }) {
   return <span ref={ref}>{n}{suffix}</span>;
 }
 
-/* ── Course Card ─────────────────────────────────────── */
+/* ── Subject emoji map ───────────────────────────────── */
+const SUBJECT_EMOJI = {
+  "математика":          "📐",
+  "история казахстана":  "📜",
+  "история":             "📜",
+  "грамотность чтения":  "📖",
+  "грамотность":         "📖",
+  "биология":            "🌿",
+  "химия":               "⚗️",
+  "физика":              "⚡",
+  "география":           "🌍",
+  "английский":          "🇬🇧",
+  "english":             "🇬🇧",
+  "ielts":               "🎯",
+  "sat":                 "🏆",
+  "информатика":         "💻",
+  "литература":          "✍️",
+};
+function getCourseEmoji(course) {
+  const key = (course.subject || course.title || "").toLowerCase();
+  for (const [k, v] of Object.entries(SUBJECT_EMOJI)) {
+    if (key.includes(k)) return v;
+  }
+  if (course.course_type === "ielts") return "🎯";
+  if (course.course_type === "sat")   return "🏆";
+  return "📚";
+}
+
+/* ── Course Card (new style) ─────────────────────────── */
 function CourseCard({ course, navigate }) {
-  const [hover, setHover] = useState(false);
+  const [hoverA, setHoverA] = useState(false);
+  const [hoverB, setHoverB] = useState(false);
   const map = {
-    ent:   { color: C.violet, bg: C.violetPale, label: "ЕНТ",   grad: `linear-gradient(135deg, ${C.violet}, ${C.violetSoft})` },
-    ielts: { color: C.green,  bg: C.greenPale,  label: "IELTS",  grad: `linear-gradient(135deg, ${C.green}, #34D399)` },
-    sat:   { color: C.amber,  bg: C.amberPale,  label: "SAT",    grad: `linear-gradient(135deg, ${C.amber}, #F59E0B)` },
+    ent:   { color: C.violet, bg: C.violetPale, grad: `linear-gradient(135deg, ${C.violet}, ${C.violetSoft})` },
+    ielts: { color: C.green,  bg: C.greenPale,  grad: `linear-gradient(135deg, ${C.green}, #34D399)` },
+    sat:   { color: C.amber,  bg: C.amberPale,  grad: `linear-gradient(135deg, ${C.amber}, #F59E0B)` },
   };
   const t = map[course.course_type] || map.ent;
+  const emoji = getCourseEmoji(course);
+
+  const lessonsCount = course.lessons_count ?? course.lessons ?? null;
+  const duration     = course.duration ?? null;
 
   return (
-    <div
-      onClick={() => navigate(`/courses/${course.id}`)}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        background: hover ? C.bg : `${C.bg}CC`,
-        border: `1.5px solid ${hover ? t.color + "60" : C.border}`,
-        borderRadius: 20, padding: "28px 24px",
-        cursor: "pointer", position: "relative", overflow: "hidden",
-        transition: "all 0.3s cubic-bezier(.34,1.56,.64,1)",
-        transform: hover ? "translateY(-6px)" : "none",
-        boxShadow: hover ? `0 20px 48px ${t.color}30` : "0 2px 12px rgba(0,0,0,.3)",
-        backdropFilter: "blur(8px)",
+    <div style={{
+      background: C.bg,
+      border: `1.5px solid ${C.border}`,
+      borderRadius: 18,
+      padding: "22px 20px 18px",
+      display: "flex", flexDirection: "column",
+      transition: "box-shadow .22s, border-color .22s, transform .22s",
+      boxShadow: "0 2px 10px rgba(0,0,0,.05)",
+    }}
+      onMouseEnter={e => {
+        e.currentTarget.style.borderColor = t.color + "55";
+        e.currentTarget.style.boxShadow   = `0 10px 32px ${t.color}22`;
+        e.currentTarget.style.transform   = "translateY(-3px)";
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.borderColor = C.border;
+        e.currentTarget.style.boxShadow   = "0 2px 10px rgba(0,0,0,.05)";
+        e.currentTarget.style.transform   = "translateY(0)";
       }}
     >
-      {/* Top accent line */}
+      {/* Icon */}
       <div style={{
-        position: "absolute", top: 0, left: 0, right: 0, height: 4,
-        background: t.grad,
-        transform: hover ? "scaleX(1)" : "scaleX(0.3)",
-        transformOrigin: "left",
-        transition: "transform 0.3s ease",
-        borderRadius: "20px 20px 0 0",
-      }} />
+        width: 54, height: 54, borderRadius: 14,
+        background: t.bg, border: `1.5px solid ${t.color}22`,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 28, marginBottom: 14, flexShrink: 0,
+        boxShadow: `0 4px 12px ${t.color}18`,
+      }}>{emoji}</div>
 
-      <div style={{ marginBottom: 14 }}>
-        <span style={{
-          fontSize: 11, fontWeight: 700, letterSpacing: 0.8,
-          textTransform: "uppercase", color: t.color,
-          background: `${t.color}20`, borderRadius: 6, padding: "4px 10px",
-        }}>{t.label}{course.subject ? ` · ${course.subject}` : ""}</span>
-      </div>
-
+      {/* Title */}
       <h3 style={{
-        fontSize: 18, fontWeight: 700, margin: "0 0 10px",
-        color: C.ink, lineHeight: 1.3,
+        fontSize: 15, fontWeight: 700, margin: "0 0 10px",
+        color: C.ink, lineHeight: 1.35, flex: 1,
       }}>{course.title}</h3>
 
-      <p style={{ color: C.gray, fontSize: 14, lineHeight: 1.75, margin: "0 0 24px" }}>
-        {course.description
-          ? (course.description.length > 100 ? course.description.slice(0, 100) + "…" : course.description)
-          : "Живые уроки, домашки с проверкой, тесты после каждой темы."}
-      </p>
+      {/* Meta: lessons + duration */}
+      <div style={{ display: "flex", gap: 14, marginBottom: 18, flexWrap: "wrap" }}>
+        {lessonsCount != null && (
+          <span style={{ fontSize: 12, color: C.gray, display: "flex", alignItems: "center", gap: 4 }}>
+            <BookOpen size={13} color={t.color} strokeWidth={2.2} />
+            {lessonsCount} уроков
+          </span>
+        )}
+        {duration != null && (
+          <span style={{ fontSize: 12, color: C.gray, display: "flex", alignItems: "center", gap: 4 }}>
+            ⏱ {duration}
+          </span>
+        )}
+        {lessonsCount == null && duration == null && (
+          <span style={{ fontSize: 12, color: C.light }}>Живые уроки · Домашки · Тесты</span>
+        )}
+      </div>
 
-      <div style={{
-        display: "flex", justifyContent: "space-between", alignItems: "center",
-        paddingTop: 18, borderTop: `1px solid ${hover ? t.color + "35" : C.border}`,
-        transition: "border-color 0.3s",
-      }}>
-        <div>
-          <div style={{ fontSize: 24, fontWeight: 800, color: t.color }}>
-            {Number(course.price).toLocaleString("ru-KZ")} ₸
-          </div>
-          <div style={{ fontSize: 12, color: C.light, marginTop: 2 }}>в месяц</div>
-        </div>
-        <div style={{
-          background: hover ? t.grad : `${t.color}20`,
-          color: hover ? "#fff" : t.color,
-          borderRadius: 10, padding: "9px 20px",
-          fontWeight: 700, fontSize: 13,
-          transition: "all 0.25s",
-        }}>Подробнее →</div>
+      {/* Two buttons */}
+      <div style={{ display: "flex", gap: 8 }}>
+        <button
+          onClick={() => navigate(`/courses/${course.id}`)}
+          onMouseEnter={() => setHoverA(true)}
+          onMouseLeave={() => setHoverA(false)}
+          style={{
+            flex: 1, padding: "9px 0", borderRadius: 10,
+            border: `1.5px solid ${hoverA ? t.color : C.border}`,
+            background: hoverA ? t.bg : "transparent",
+            color: hoverA ? t.color : C.gray,
+            fontWeight: 600, fontSize: 13, cursor: "pointer",
+            fontFamily: font, transition: "all .2s",
+          }}
+        >Подробнее</button>
+        <button
+          onClick={() => navigate("/register")}
+          onMouseEnter={() => setHoverB(true)}
+          onMouseLeave={() => setHoverB(false)}
+          style={{
+            flex: 1, padding: "9px 0", borderRadius: 10,
+            border: "none",
+            background: hoverB ? t.grad : `linear-gradient(135deg, ${C.violet}, ${C.violetSoft})`,
+            color: "#fff",
+            fontWeight: 700, fontSize: 13, cursor: "pointer",
+            fontFamily: font, transition: "all .2s",
+            boxShadow: hoverB ? `0 6px 18px ${t.color}40` : "none",
+          }}
+        >Оставить заявку</button>
       </div>
     </div>
   );
@@ -173,7 +226,6 @@ export default function CoursesPage() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [scrolled, setScrolled] = useState(false);
-  const [showAllCourses, setShowAllCourses] = useState(false);
 
   useEffect(() => {
     coursesAPI.list().then(r => setCourses(r.data)).catch(() => {}).finally(() => setLoading(false));
@@ -494,43 +546,66 @@ export default function CoursesPage() {
       {/* ── COURSES ── */}
       <section id="courses" style={{ padding: isMobile ? "60px 20px" : "96px 48px", background:C.bg }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
-          <div style={{ display:"flex", flexDirection: isMobile ? "column" : "row", justifyContent:"space-between", alignItems: isMobile ? "flex-start" : "flex-end", gap:12, marginBottom:52 }}>
-            <div>
-              <span style={{ fontSize:12, fontWeight:700, letterSpacing:1.2, textTransform:"uppercase", color:C.violet, background:C.violetPale, borderRadius:6, padding:"4px 12px" }}>Программы</span>
-              <h2 style={{ fontSize:"clamp(30px,4vw,46px)", fontWeight:800, margin:"16px 0 0", letterSpacing:-1.2, color:C.ink }}>Выбери свой курс</h2>
-            </div>
-            <p style={{ color:C.gray, fontSize:14, maxWidth:240, textAlign:"right", lineHeight:1.7 }}>
-              Подготовка к ЕНТ, IELTS и SAT с нуля до результата
-            </p>
+          <div style={{ textAlign:"center", marginBottom:56 }}>
+            <span style={{ fontSize:12, fontWeight:700, letterSpacing:1.2, textTransform:"uppercase", color:C.violet, background:C.violetPale, borderRadius:6, padding:"4px 12px" }}>Программы</span>
+            <h2 style={{ fontSize:"clamp(30px,4vw,46px)", fontWeight:800, margin:"16px 0 0", letterSpacing:-1.2, color:C.ink }}>Выбери свой курс</h2>
+            <p style={{ color:C.gray, fontSize:15, marginTop:14, lineHeight:1.7 }}>Подготовка к ЕНТ, IELTS и SAT с нуля до результата</p>
           </div>
 
           {loading ? (
             <div style={{ textAlign:"center", padding:80, color:C.gray }}>Загрузка курсов…</div>
           ) : courses.length === 0 ? (
             <div style={{ textAlign:"center", padding:80, color:C.gray }}>Курсы скоро появятся</div>
-          ) : (
-            <>
-              <div style={{ display:"grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill,minmax(320px,1fr))", gap:20 }}>
-                {(showAllCourses ? courses : courses.slice(0,6)).map(c => <CourseCard key={c.id} course={c} navigate={navigate}/>)}
+          ) : (() => {
+            const CATEGORY_META = {
+              ent:   { label: "ПОДГОТОВКА К ЕНТ",   color: C.violet, bg: C.violetPale },
+              ielts: { label: "ПОДГОТОВКА К IELTS",  color: C.green,  bg: C.greenPale  },
+              sat:   { label: "ПОДГОТОВКА К SAT",    color: C.amber,  bg: C.amberPale  },
+            };
+            const ORDER = ["ent", "ielts", "sat"];
+            const grouped = {};
+            courses.forEach(c => {
+              const k = c.course_type || "ent";
+              if (!grouped[k]) grouped[k] = [];
+              grouped[k].push(c);
+            });
+            const categories = ORDER.filter(k => grouped[k]?.length);
+            // append unknown types
+            Object.keys(grouped).forEach(k => { if (!ORDER.includes(k)) categories.push(k); });
+            return (
+              <div style={{ display:"flex", flexDirection:"column", gap:52 }}>
+                {categories.map(key => {
+                  const meta = CATEGORY_META[key] || { label: key.toUpperCase(), color: C.violet, bg: C.violetPale };
+                  const list = grouped[key];
+                  return (
+                    <div key={key}>
+                      {/* Category header */}
+                      <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:24 }}>
+                        <span style={{
+                          fontSize:11, fontWeight:800, letterSpacing:1.6,
+                          textTransform:"uppercase", color: meta.color,
+                          background: meta.bg, borderRadius:8,
+                          padding:"5px 14px", border:`1.5px solid ${meta.color}22`,
+                        }}>{meta.label}</span>
+                        <div style={{ flex:1, height:1, background: C.border }}/>
+                        <span style={{ fontSize:12, color:C.light, whiteSpace:"nowrap" }}>{list.length} {list.length === 1 ? "курс" : list.length < 5 ? "курса" : "курсов"}</span>
+                      </div>
+                      {/* Cards grid */}
+                      <div style={{
+                        display:"grid",
+                        gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill, minmax(260px, 1fr))",
+                        gap:16,
+                      }}>
+                        {list.map(c => <CourseCard key={c.id} course={c} navigate={navigate}/>)}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              {courses.length > 6 && (
-                <div style={{ textAlign:"center", marginTop:32 }}>
-                  <button onClick={() => setShowAllCourses(v => !v)} style={{
-                    background: showAllCourses ? C.surface : `linear-gradient(135deg,${C.violet},${C.violetSoft})`,
-                    color: showAllCourses ? C.violet : "#fff",
-                    border: `1.5px solid ${showAllCourses ? C.violet : "transparent"}`,
-                    borderRadius:14, padding:"13px 36px", fontWeight:800, fontSize:15,
-                    cursor:"pointer", fontFamily:font, transition:"all .2s",
-                    boxShadow: showAllCourses ? "none" : `0 8px 24px rgba(124,58,237,.25)`,
-                  }}>
-                    {showAllCourses ? `Скрыть ↑` : `Показать все ${courses.length} курсов ↓`}
-                  </button>
-                </div>
-              )}
-            </>
-          )}
+            );
+          })()}
 
-          <div style={{ textAlign:"center", marginTop:52 }}>
+          <div style={{ textAlign:"center", marginTop:60 }}>
             <p style={{ color:C.gray, marginBottom:14, fontSize:14 }}>Не нашёл нужный курс?</p>
             <a href="https://t.me/eduplatform_kz" target="_blank" rel="noreferrer" style={{
               display:"inline-flex", alignItems:"center", gap:8,
