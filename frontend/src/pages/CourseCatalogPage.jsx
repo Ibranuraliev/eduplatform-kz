@@ -28,12 +28,13 @@ const font = "'Inter', system-ui, -apple-system, sans-serif";
 
 /* ── Subject SVG illustrations ───────────────────────── */
 function SubjectIllustration({ course, color }) {
-  const key = (course.subject || course.title || "").toLowerCase();
+  // Combine subject code + title so both "ENT_MATH" and "ЕНТ Математика" match
+  const key = [course.subject, course.title].filter(Boolean).join(" ").toLowerCase();
   const type = course.course_type;
   const f = `${color}20`;   // faint fill
 
   /* МАТЕМАТИКА — parabola on axes */
-  if (key.includes("математ")) return (
+  if (key.includes("математ") || key.includes("math")) return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <line x1="4" y1="27" x2="28" y2="27" stroke={color} strokeWidth="1.6" strokeLinecap="round"/>
       <line x1="16" y1="4"  x2="16" y2="27" stroke={color} strokeWidth="1.6" strokeLinecap="round"/>
@@ -44,7 +45,7 @@ function SubjectIllustration({ course, color }) {
   );
 
   /* ИСТОРИЯ — ancient scroll */
-  if (key.includes("история")) return (
+  if (key.includes("история") || key.includes("history")) return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <rect x="8" y="5" width="16" height="22" rx="2" stroke={color} strokeWidth="1.5" fill={f}/>
       <path d="M8 5 Q5 5 5 8 Q5 11 8 11" stroke={color} strokeWidth="1.5"/>
@@ -56,7 +57,7 @@ function SubjectIllustration({ course, color }) {
   );
 
   /* ГРАМОТНОСТЬ ЧТЕНИЯ — open book */
-  if (key.includes("грамотность")) return (
+  if (key.includes("грамотность") || key.includes("literacy") || key.includes("reading")) return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <path d="M16 8 L16 26" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
       <path d="M4 9 Q16 7 16 9 L16 26 Q4 25 4 27 Z" stroke={color} strokeWidth="1.5" fill={f}/>
@@ -69,7 +70,7 @@ function SubjectIllustration({ course, color }) {
   );
 
   /* БИОЛОГИЯ — DNA double helix */
-  if (key.includes("биолог")) return (
+  if (key.includes("биолог") || key.includes("biology") || key.includes("bio")) return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <path d="M10 4 Q22 10 10 16 Q22 22 10 28" stroke={color} strokeWidth="2" strokeLinecap="round"/>
       <path d="M22 4 Q10 10 22 16 Q10 22 22 28" stroke={color} strokeWidth="2" strokeLinecap="round"/>
@@ -80,7 +81,7 @@ function SubjectIllustration({ course, color }) {
   );
 
   /* ХИМИЯ — Erlenmeyer flask */
-  if (key.includes("хим")) return (
+  if (key.includes("хим") || key.includes("chem")) return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <path d="M13 4 L13 13 L5 25 Q4 28 7 28 L25 28 Q28 28 27 25 L19 13 L19 4 Z"
             stroke={color} strokeWidth="1.5" strokeLinejoin="round" fill={f}/>
@@ -92,7 +93,7 @@ function SubjectIllustration({ course, color }) {
   );
 
   /* ФИЗИКА — atom with three orbits */
-  if (key.includes("физик")) return (
+  if (key.includes("физик") || key.includes("physics") || key.includes("phys")) return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <circle cx="16" cy="16" r="3" fill={color}/>
       <ellipse cx="16" cy="16" rx="13" ry="5" stroke={color} strokeWidth="1.5"/>
@@ -102,7 +103,7 @@ function SubjectIllustration({ course, color }) {
   );
 
   /* ГЕОГРАФИЯ — globe with meridians */
-  if (key.includes("географ")) return (
+  if (key.includes("географ") || key.includes("geograph")) return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <circle cx="16" cy="16" r="12" stroke={color} strokeWidth="1.5" fill={f}/>
       <ellipse cx="16" cy="16" rx="6"  ry="12" stroke={color} strokeWidth="1.3"/>
@@ -113,7 +114,7 @@ function SubjectIllustration({ course, color }) {
   );
 
   /* АНГЛИЙСКИЙ — speech bubble Aa */
-  if (key.includes("английск") || key.includes("english")) return (
+  if ((key.includes("английск") || key.includes("english")) && !key.includes("ielts")) return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <rect x="3" y="4" width="23" height="17" rx="4" stroke={color} strokeWidth="1.5" fill={f}/>
       <path d="M8 21 L6 27 L13 21" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
@@ -121,7 +122,7 @@ function SubjectIllustration({ course, color }) {
     </svg>
   );
 
-  /* IELTS — bullseye target */
+  /* IELTS — bullseye target (only if no more specific subject matched) */
   if (key.includes("ielts") || type === "ielts") return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <circle cx="16" cy="16" r="12" stroke={color} strokeWidth="1.5"/>
@@ -133,8 +134,8 @@ function SubjectIllustration({ course, color }) {
     </svg>
   );
 
-  /* SAT — five-pointed star */
-  if (key.includes("sat") || type === "sat") return (
+  /* SAT — five-pointed star (only if no more specific subject matched) */
+  if (type === "sat") return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <path d="M16 4 L19.5 13 L29 13 L21.5 18.5 L24.5 28 L16 22.5 L7.5 28 L10.5 18.5 L3 13 L12.5 13 Z"
             stroke={color} strokeWidth="1.5" strokeLinejoin="round" fill={f}/>
@@ -142,7 +143,7 @@ function SubjectIllustration({ course, color }) {
   );
 
   /* ИНФОРМАТИКА — code brackets </> */
-  if (key.includes("информат")) return (
+  if (key.includes("информат") || key.includes("computer") || key.includes("coding") || key.includes("programming")) return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <path d="M11 10 L5 16 L11 22" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
       <path d="M21 10 L27 16 L21 22" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -151,7 +152,7 @@ function SubjectIllustration({ course, color }) {
   );
 
   /* ЛИТЕРАТУРА — feather quill */
-  if (key.includes("литерат")) return (
+  if (key.includes("литерат") || key.includes("literature")) return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <path d="M7 26 Q13 19 17 13 Q23 5 29 4 Q27 10 21 17 Q17 21 12 26 Z"
             stroke={color} strokeWidth="1.5" fill={f} strokeLinejoin="round"/>
@@ -161,14 +162,14 @@ function SubjectIllustration({ course, color }) {
   );
 
   /* КАЗАХСКИЙ — "Кк" */
-  if (key.includes("казахск")) return (
+  if (key.includes("казахск") || key.includes("kazakh") || key.includes("_kaz")) return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <text x="1" y="22" fontSize="17" fontWeight="800" fill={color} fontFamily="Arial,sans-serif">Кк</text>
     </svg>
   );
 
   /* РУССКИЙ ЯЗЫК — "Аа" */
-  if (key.includes("русск")) return (
+  if (key.includes("русск") || key.includes("russian") || key.includes("_rus")) return (
     <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
       <text x="1" y="22" fontSize="17" fontWeight="800" fill={color} fontFamily="Arial,sans-serif">Аа</text>
     </svg>
