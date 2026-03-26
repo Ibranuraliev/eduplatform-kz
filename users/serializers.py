@@ -37,6 +37,10 @@ class RegisterSerializer(serializers.ModelSerializer):
             if not User.objects.filter(referral_code=code).exists():
                 break
 
+        # Normalize phone: always store with leading +
+        from .views import normalize_phone
+        if 'phone' in validated_data:
+            validated_data['phone'] = normalize_phone(validated_data['phone'])
         validated_data['username'] = validated_data['phone']
         user = User(**validated_data)
         user.set_password(password)

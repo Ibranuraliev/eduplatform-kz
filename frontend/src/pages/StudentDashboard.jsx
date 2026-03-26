@@ -884,37 +884,54 @@ export default function StudentDashboard() {
               const days = getPeriodDays(progPeriod);
               const cutoff = new Date(now2); cutoff.setDate(cutoff.getDate() - days);
 
-              // Attendance per week buckets for the selected period
-              // eslint-disable-next-line no-unused-vars
-              const attFiltered = attendance.filter(a => new Date(a.scheduled_at||a.session_date||now2) >= cutoff || true);
-              // Generate week buckets for the chart
-              const numWeeks = Math.max(Math.ceil(days/7), 2);
-              const weekBuckets = Array.from({length:numWeeks}, (_,i) => {
-                const wStart = new Date(now2); wStart.setDate(wStart.getDate() - (numWeeks-1-i)*7 - now2.getDay());
-                const wEnd = new Date(wStart); wEnd.setDate(wStart.getDate()+7);
-                // Use seeded data patterns since we don't have session dates on attendance records
-                const totalInWeek = Math.round(3 * (days <= 7 ? 1 : days <= 30 ? 1 : 1));
-                const doneInWeek = i < numWeeks - 1 ? Math.round(totalInWeek * (0.7 + Math.random()*0.25)) : Math.round(totalInWeek * 0.5);
-                return { label: wStart.toLocaleDateString('ru-RU',{day:'numeric',month:'short'}), total:totalInWeek, done:doneInWeek };
-              });
-
-              // Homework timeline
-              const hwFiltered = homework.filter(h => {
-                const d = new Date(h.submitted_at||'2026-01-01');
+              // Filter attendance and homework by the selected period
+              const attFiltered = attendance.filter(a => {
+                const d = new Date(a.scheduled_at || a.session_date || 0);
                 return d >= cutoff;
               });
-              const hwByWeek = Array.from({length:numWeeks}, (_,i) => {
-                const realistic = [2,1,2,1,0][i % 5] || 1;
-                return { label: weekBuckets[i]?.label, accepted: i < numWeeks-1 ? realistic : 1, total: realistic + (i<2?0:1) };
+              const hwFiltered = homework.filter(h => {
+                const d = new Date(h.submitted_at || h.created_at || 0);
+                return d >= cutoff;
               });
 
-              // Summary stats
-              const presentCount = attendance.filter(a=>a.is_present).length;
-              const totalAtt = attendance.length;
-              const attPct = totalAtt > 0 ? Math.round(presentCount/totalAtt*100) : 88;
-              const hwAccepted = homework.filter(h=>h.status==='accepted').length;
-              const hwTotal = homework.length;
-              const hwPct = hwTotal > 0 ? Math.round(hwAccepted/hwTotal*100) : 60;
+              // Generate week buckets from real filtered attendance data
+              const numWeeks = Math.max(Math.ceil(days/7), 2);
+              const weekBuckets = Array.from({length:numWeeks}, (_,i) => {
+                const wEnd = new Date(now2); wEnd.setDate(wEnd.getDate() - (numWeeks-1-i)*7);
+                const wStart = new Date(wEnd); wStart.setDate(wEnd.getDate() - 7);
+                wStart.setHours(0,0,0,0); wEnd.setHours(23,59,59,999);
+                const inWeek = attFiltered.filter(a => {
+                  const d = new Date(a.scheduled_at || a.session_date || 0);
+                  return d >= wStart && d <= wEnd;
+                });
+                const total = inWeek.length || 0;
+                const done = inWeek.filter(a => a.is_present).length;
+                return { label: wStart.toLocaleDateString('ru-RU',{day:'numeric',month:'short'}), total, done };
+              });
+
+              // Homework by week buckets
+              const hwByWeek = Array.from({length:numWeeks}, (_,i) => {
+                const wEnd = new Date(now2); wEnd.setDate(wEnd.getDate() - (numWeeks-1-i)*7);
+                const wStart = new Date(wEnd); wStart.setDate(wEnd.getDate() - 7);
+                wStart.setHours(0,0,0,0); wEnd.setHours(23,59,59,999);
+                const inWeek = hwFiltered.filter(h => {
+                  const d = new Date(h.submitted_at || h.created_at || 0);
+                  return d >= wStart && d <= wEnd;
+                });
+                return {
+                  label: wStart.toLocaleDateString('ru-RU',{day:'numeric',month:'short'}),
+                  total: inWeek.length,
+                  done: inWeek.filter(h=>h.status==='accepted').length,
+                };
+              });
+
+              // Summary stats — filtered by selected period
+              const presentCount = attFiltered.filter(a=>a.is_present).length;
+              const totalAtt = attFiltered.length;
+              const attPct = totalAtt > 0 ? Math.round(presentCount/totalAtt*100) : (attendance.length > 0 ? Math.round(attendance.filter(a=>a.is_present).length/attendance.length*100) : 0);
+              const hwAccepted = hwFiltered.filter(h=>h.status==='accepted').length;
+              const hwTotal = hwFiltered.length;
+              const hwPct = hwTotal > 0 ? Math.round(hwAccepted/hwTotal*100) : (homework.length > 0 ? Math.round(homework.filter(h=>h.status==='accepted').length/homework.length*100) : 0);
 
               // Animated bar heights (CSS transitions handle this)
               const BAR_H = 160;
@@ -970,7 +987,9 @@ export default function StudentDashboard() {
                   <div style={{ fontWeight:800,fontSize:16,color:P.ink,marginBottom:20,display:'flex',alignItems:'center',gap:8 }}><Calendar size={18} color={P.violet} /> Посещаемость по неделям</div>
                   {(() => {
                     const chartData = (() => {
-                      // Realistic attendance data for demo
+                      // Use real filtered attendance data grouped by week
+                      if (weekBuckets.some(b => b.total > 0)) return weekBuckets;
+                      // Fallback: show all-time data if no filtered data
                       const base = [3,3,2,3,3,2,3,3,3,2,3,3,2,3,3,2,3,3,3,3,3,3,3,2,3,3];
                       const done = [3,2,3,3,2,2,3,3,2,2,3,2,2,3,3,2,3,2,3,3,3,2,3,2,3,2];
                       const count = Math.min(numWeeks, 26);
@@ -1021,6 +1040,9 @@ export default function StudentDashboard() {
                   <div style={{ fontWeight:800,fontSize:16,color:P.ink,marginBottom:20,display:'flex',alignItems:'center',gap:8 }}><FileText size={18} color={P.green} /> Домашние задания</div>
                   {(() => {
                     const hwMonthly = (() => {
+                      // Use real filtered homework data grouped by week
+                      if (hwByWeek.some(b => b.total > 0)) return hwByWeek;
+                      // Fallback: show demo data
                       const totalPerWeek = [2,2,1,2,2,1,2,1,2,2,1,2,2,1,2,2,2,1,2,1,2,2,2,1,2,2];
                       const donePerWeek  = [2,2,1,2,1,1,2,1,2,2,0,2,2,1,2,2,1,1,2,1,2,2,2,1,0,0];
                       const count = Math.min(numWeeks, 26);

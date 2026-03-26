@@ -322,7 +322,7 @@ export default function WeekCalendar({ mode='teacher', homework=[] }){
 
   useEffect(()=>{
     setLoading(true);
-    api.get(isTeacher?'/groups/teacher-sessions/?days=60':'/groups/my-schedule/?include_past=true')
+    api.get(isTeacher?'/groups/teacher-sessions/?days=60':'/groups/schedule/?include_past=true')
       .then(r=>{
         const data = Array.isArray(r.data)?r.data:r.data?.results||[];
         setSessions(data);

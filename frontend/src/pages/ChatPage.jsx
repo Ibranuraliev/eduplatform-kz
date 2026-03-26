@@ -190,7 +190,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#F8F6FF', fontFamily: font, display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: isMobile ? '100vh' : 'auto', minHeight: isMobile ? undefined : '100vh', overflow: isMobile ? 'hidden' : 'visible', background: '#F8F6FF', fontFamily: font, display: 'flex', flexDirection: 'column' }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap'); *{box-sizing:border-box;}`}</style>
 
       {/* Navbar */}

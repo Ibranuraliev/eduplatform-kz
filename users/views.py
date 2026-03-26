@@ -10,6 +10,16 @@ from .serializers import RegisterSerializer, UserSerializer
 import secrets
 
 
+def normalize_phone(phone):
+    """Strip spaces/dashes/parens and ensure leading + is present."""
+    if not phone:
+        return phone
+    phone = phone.strip().replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+    # Remove any existing + then re-add one
+    phone = phone.lstrip('+')
+    return '+' + phone
+
+
 class LoginThrottle(AnonRateThrottle):
     scope = 'login'
 
@@ -36,7 +46,7 @@ class LoginView(APIView):
         from .models import TokenExpiry, RefreshToken as RefreshTokenModel
         from datetime import timedelta
 
-        phone = request.data.get('phone')
+        phone = request.data.get('phone', '')
         password = request.data.get('password')
 
         if not phone or not password:
@@ -45,7 +55,14 @@ class LoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        user = authenticate(request, username=phone, password=password)
+        # Normalize: try with + (canonical) and without
+        phone_norm = normalize_phone(phone)           # always +7...
+        phone_bare = phone_norm.lstrip('+')           # 7...
+        user = (
+            authenticate(request, username=phone_norm, password=password) or
+            authenticate(request, username=phone_bare, password=password) or
+            authenticate(request, username=phone.strip(), password=password)
+        )
         if user:
             login(request, user)
             # Always create a fresh access token
