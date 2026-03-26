@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { coursesAPI } from "../api";
-import { BookOpen } from "lucide-react";
+import {
+  BookOpen, Calculator, Scroll, Microscope, FlaskConical,
+  Zap, Globe, Languages, Target, Award, Code2, PenLine,
+  BookMarked, FileText, GraduationCap, Clock,
+} from "lucide-react";
 import useMobile from "../hooks/useMobile";
 
 /* ── Tokens ─────────────────────────────────────────── */
@@ -26,34 +30,27 @@ const C = {
 };
 const font = "'Inter', system-ui, -apple-system, sans-serif";
 
-/* ── Subject emoji map ───────────────────────────────── */
-const SUBJECT_EMOJI = {
-  "математика":         "📐",
-  "история казахстана": "📜",
-  "история":            "📜",
-  "грамотность чтения": "📖",
-  "грамотность":        "📖",
-  "биология":           "🌿",
-  "химия":              "⚗️",
-  "физика":             "⚡",
-  "география":          "🌍",
-  "английский":         "🇬🇧",
-  "english":            "🇬🇧",
-  "ielts":              "🎯",
-  "sat":                "🏆",
-  "информатика":        "💻",
-  "литература":         "✍️",
-  "казахский":          "🇰🇿",
-  "русский":            "📝",
-};
-function getCourseEmoji(course) {
+/* ── Subject icon map ────────────────────────────────── */
+function getCourseIcon(course) {
   const key = (course.subject || course.title || "").toLowerCase();
-  for (const [k, v] of Object.entries(SUBJECT_EMOJI)) {
-    if (key.includes(k)) return v;
-  }
-  if (course.course_type === "ielts") return "🎯";
-  if (course.course_type === "sat")   return "🏆";
-  return "📚";
+  if (key.includes("математ"))                         return Calculator;
+  if (key.includes("история казахстана"))              return Scroll;
+  if (key.includes("история"))                         return Scroll;
+  if (key.includes("грамотность"))                     return BookOpen;
+  if (key.includes("биолог"))                          return Microscope;
+  if (key.includes("хим"))                             return FlaskConical;
+  if (key.includes("физик"))                           return Zap;
+  if (key.includes("географ"))                         return Globe;
+  if (key.includes("английск") || key.includes("english")) return Languages;
+  if (key.includes("ielts"))                           return Target;
+  if (key.includes("sat"))                             return Award;
+  if (key.includes("информат"))                        return Code2;
+  if (key.includes("литерат"))                         return PenLine;
+  if (key.includes("казахск"))                         return BookMarked;
+  if (key.includes("русск"))                           return FileText;
+  if (course.course_type === "ielts")                  return Target;
+  if (course.course_type === "sat")                    return Award;
+  return GraduationCap;
 }
 
 /* ── Course Card ─────────────────────────────────────── */
@@ -64,9 +61,10 @@ function CourseCard({ course, navigate }) {
     sat:   { color: C.amber,  bg: C.amberPale  },
   };
   const t = map[course.course_type] || map.ent;
-  const emoji = getCourseEmoji(course);
+  const Icon         = getCourseIcon(course);
   const lessonsCount = course.lessons_count ?? course.lessons ?? null;
   const duration     = course.duration ?? null;
+  const price        = course.price ? Number(course.price) : null;
 
   return (
     <div style={{
@@ -77,7 +75,7 @@ function CourseCard({ course, navigate }) {
       display: "flex", flexDirection: "column",
       boxShadow: "0 2px 8px rgba(0,0,0,.04)",
     }}>
-      {/* Top row: title + emoji */}
+      {/* Top row: title + icon */}
       <div style={{
         display: "flex", justifyContent: "space-between",
         alignItems: "flex-start", gap: 12, marginBottom: 12,
@@ -87,31 +85,43 @@ function CourseCard({ course, navigate }) {
           lineHeight: 1.3, margin: 0, flex: 1,
         }}>{course.title}</h3>
         <div style={{
-          fontSize: 46, lineHeight: 1, flexShrink: 0,
-          width: 56, height: 56,
+          width: 52, height: 52, flexShrink: 0,
           display: "flex", alignItems: "center", justifyContent: "center",
           background: t.bg, borderRadius: 12,
-          border: `1.5px solid ${t.color}18`,
-        }}>{emoji}</div>
+          border: `1.5px solid ${t.color}20`,
+        }}>
+          <Icon size={26} color={t.color} strokeWidth={1.8} />
+        </div>
       </div>
 
       {/* Meta */}
-      <div style={{ color: C.gray, fontSize: 13, lineHeight: 1.9, marginBottom: 16 }}>
+      <div style={{ color: C.gray, fontSize: 13, lineHeight: 1.9, marginBottom: 14 }}>
         {duration && (
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ color: C.light }}>⏱</span> Длительность: {duration}
+            <Clock size={12} color={C.light} strokeWidth={2} />
+            Длительность: {duration}
           </div>
         )}
         {lessonsCount != null && (
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <BookOpen size={12} color={C.light} />
+            <BookOpen size={12} color={C.light} strokeWidth={2} />
             {lessonsCount} занятий
           </div>
         )}
         {!duration && lessonsCount == null && (
-          <div style={{ color: C.light }}>Живые уроки · Домашки · Тесты</div>
+          <div style={{ color: C.light, fontSize: 12 }}>Живые уроки · Домашки · Тесты</div>
         )}
       </div>
+
+      {/* Price */}
+      {price != null && (
+        <div style={{ marginBottom: 14 }}>
+          <span style={{ fontSize: 20, fontWeight: 800, color: t.color }}>
+            {price.toLocaleString("ru-KZ")} ₸
+          </span>
+          <span style={{ fontSize: 12, color: C.light, marginLeft: 4 }}>/ мес</span>
+        </div>
+      )}
 
       {/* Buttons */}
       <div style={{ display: "flex", gap: 8, marginTop: "auto" }}>
@@ -136,7 +146,7 @@ function CourseCard({ course, navigate }) {
           }}
         >Подробнее</button>
         <button
-          onClick={() => navigate("/register")}
+          onClick={() => navigate(`/courses/${course.id}`)}
           style={{
             flex: 1, padding: "9px 0", borderRadius: 8,
             border: "none",
@@ -146,7 +156,7 @@ function CourseCard({ course, navigate }) {
           }}
           onMouseEnter={e => { e.currentTarget.style.opacity = "0.88"; }}
           onMouseLeave={e => { e.currentTarget.style.opacity = "1"; }}
-        >Оставить заявку</button>
+        >Купить</button>
       </div>
     </div>
   );
@@ -266,15 +276,9 @@ export default function CourseCatalogPage() {
             onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.gray; }}
           >← Назад</button>
 
-          <span style={{
-            fontSize: 12, fontWeight: 700, letterSpacing: 1.2,
-            textTransform: "uppercase", color: C.violet,
-            background: C.violetPale, borderRadius: 6, padding: "4px 12px",
-            border: `1.5px solid ${C.violet}20`,
-          }}>Программы</span>
           <h1 style={{
             fontSize: "clamp(28px,4vw,44px)", fontWeight: 800,
-            letterSpacing: -1.2, color: C.ink, margin: "14px 0 10px",
+            letterSpacing: -1.2, color: C.ink, margin: "0 0 10px",
           }}>Каталог курсов</h1>
           <p style={{ color: C.gray, fontSize: 15, lineHeight: 1.7 }}>
             Выберите предмет и начните подготовку уже сегодня

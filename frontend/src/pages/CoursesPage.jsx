@@ -520,21 +520,10 @@ export default function CoursesPage() {
                       ))}
                     </div>
 
-                    {/* Gift badge */}
-                    <div style={{
-                      background: plan.bg,
-                      borderRadius: 10, padding: "8px 14px",
-                      display: "inline-flex", alignItems: "center", gap: 6,
-                      marginBottom: 20, fontSize: 13, fontWeight: 600, color: plan.color,
-                      border: `1px solid ${plan.color}20`,
-                    }}>
-                      🎁 Грамотность чтения в подарок
-                    </div>
-
                     {/* CTA button */}
                     <div>
                       <button
-                        onClick={() => navigate("/register")}
+                        onClick={() => navigate("/catalog")}
                         style={{
                           width: "100%", padding: "13px 0",
                           background: plan.grad,
@@ -544,7 +533,7 @@ export default function CoursesPage() {
                         }}
                         onMouseEnter={e => { e.currentTarget.style.opacity = "0.88"; }}
                         onMouseLeave={e => { e.currentTarget.style.opacity = "1"; }}
-                      >Получить консультацию</button>
+                      >Купить</button>
                     </div>
                   </div>
                 ))}
