@@ -2,11 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { coursesAPI } from "../api";
-import {
-  BookOpen, Calculator, Scroll, Microscope, FlaskConical,
-  Zap, Globe, Languages, Target, Award, Code2, PenLine,
-  BookMarked, FileText, GraduationCap, Clock,
-} from "lucide-react";
+import { BookOpen, Clock } from "lucide-react";
 import useMobile from "../hooks/useMobile";
 
 /* ── Tokens ─────────────────────────────────────────── */
@@ -30,27 +26,163 @@ const C = {
 };
 const font = "'Inter', system-ui, -apple-system, sans-serif";
 
-/* ── Subject icon map ────────────────────────────────── */
-function getCourseIcon(course) {
+/* ── Subject SVG illustrations ───────────────────────── */
+function SubjectIllustration({ course, color }) {
   const key = (course.subject || course.title || "").toLowerCase();
-  if (key.includes("математ"))                         return Calculator;
-  if (key.includes("история казахстана"))              return Scroll;
-  if (key.includes("история"))                         return Scroll;
-  if (key.includes("грамотность"))                     return BookOpen;
-  if (key.includes("биолог"))                          return Microscope;
-  if (key.includes("хим"))                             return FlaskConical;
-  if (key.includes("физик"))                           return Zap;
-  if (key.includes("географ"))                         return Globe;
-  if (key.includes("английск") || key.includes("english")) return Languages;
-  if (key.includes("ielts"))                           return Target;
-  if (key.includes("sat"))                             return Award;
-  if (key.includes("информат"))                        return Code2;
-  if (key.includes("литерат"))                         return PenLine;
-  if (key.includes("казахск"))                         return BookMarked;
-  if (key.includes("русск"))                           return FileText;
-  if (course.course_type === "ielts")                  return Target;
-  if (course.course_type === "sat")                    return Award;
-  return GraduationCap;
+  const type = course.course_type;
+  const f = `${color}20`;   // faint fill
+
+  /* МАТЕМАТИКА — parabola on axes */
+  if (key.includes("математ")) return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <line x1="4" y1="27" x2="28" y2="27" stroke={color} strokeWidth="1.6" strokeLinecap="round"/>
+      <line x1="16" y1="4"  x2="16" y2="27" stroke={color} strokeWidth="1.6" strokeLinecap="round"/>
+      <path d="M25 24.5 L28 27 L25 29.5" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M13.5 6.5 L16 4 L18.5 6.5" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M6 26 Q16 9 26 26" stroke={color} strokeWidth="2.2" strokeLinecap="round"/>
+    </svg>
+  );
+
+  /* ИСТОРИЯ — ancient scroll */
+  if (key.includes("история")) return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <rect x="8" y="5" width="16" height="22" rx="2" stroke={color} strokeWidth="1.5" fill={f}/>
+      <path d="M8 5 Q5 5 5 8 Q5 11 8 11" stroke={color} strokeWidth="1.5"/>
+      <path d="M8 27 Q5 27 5 24 Q5 21 8 21" stroke={color} strokeWidth="1.5"/>
+      <line x1="11" y1="13" x2="21" y2="13" stroke={color} strokeWidth="1.4" strokeLinecap="round"/>
+      <line x1="11" y1="17" x2="21" y2="17" stroke={color} strokeWidth="1.4" strokeLinecap="round"/>
+      <line x1="11" y1="21" x2="17" y2="21" stroke={color} strokeWidth="1.4" strokeLinecap="round"/>
+    </svg>
+  );
+
+  /* ГРАМОТНОСТЬ ЧТЕНИЯ — open book */
+  if (key.includes("грамотность")) return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <path d="M16 8 L16 26" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M4 9 Q16 7 16 9 L16 26 Q4 25 4 27 Z" stroke={color} strokeWidth="1.5" fill={f}/>
+      <path d="M28 9 Q16 7 16 9 L16 26 Q28 25 28 27 Z" stroke={color} strokeWidth="1.5" fill={f}/>
+      <line x1="7" y1="14" x2="13" y2="14" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="7" y1="17" x2="13" y2="17" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="19" y1="14" x2="25" y2="14" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+      <line x1="19" y1="17" x2="25" y2="17" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+    </svg>
+  );
+
+  /* БИОЛОГИЯ — DNA double helix */
+  if (key.includes("биолог")) return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <path d="M10 4 Q22 10 10 16 Q22 22 10 28" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+      <path d="M22 4 Q10 10 22 16 Q10 22 22 28" stroke={color} strokeWidth="2" strokeLinecap="round"/>
+      <line x1="10" y1="10.5" x2="22" y2="10.5" stroke={color} strokeWidth="1.4" strokeLinecap="round"/>
+      <line x1="10" y1="16"   x2="22" y2="16"   stroke={color} strokeWidth="1.4" strokeLinecap="round"/>
+      <line x1="10" y1="21.5" x2="22" y2="21.5" stroke={color} strokeWidth="1.4" strokeLinecap="round"/>
+    </svg>
+  );
+
+  /* ХИМИЯ — Erlenmeyer flask */
+  if (key.includes("хим")) return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <path d="M13 4 L13 13 L5 25 Q4 28 7 28 L25 28 Q28 28 27 25 L19 13 L19 4 Z"
+            stroke={color} strokeWidth="1.5" strokeLinejoin="round" fill={f}/>
+      <line x1="11" y1="4" x2="21" y2="4" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="12" cy="22" r="2" fill={color}/>
+      <circle cx="19" cy="20" r="1.5" fill={color}/>
+      <circle cx="16" cy="24" r="1" fill={color}/>
+    </svg>
+  );
+
+  /* ФИЗИКА — atom with three orbits */
+  if (key.includes("физик")) return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <circle cx="16" cy="16" r="3" fill={color}/>
+      <ellipse cx="16" cy="16" rx="13" ry="5" stroke={color} strokeWidth="1.5"/>
+      <ellipse cx="16" cy="16" rx="13" ry="5" stroke={color} strokeWidth="1.5" transform="rotate(60 16 16)"/>
+      <ellipse cx="16" cy="16" rx="13" ry="5" stroke={color} strokeWidth="1.5" transform="rotate(-60 16 16)"/>
+    </svg>
+  );
+
+  /* ГЕОГРАФИЯ — globe with meridians */
+  if (key.includes("географ")) return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <circle cx="16" cy="16" r="12" stroke={color} strokeWidth="1.5" fill={f}/>
+      <ellipse cx="16" cy="16" rx="6"  ry="12" stroke={color} strokeWidth="1.3"/>
+      <line x1="4" y1="16" x2="28" y2="16" stroke={color} strokeWidth="1.3" strokeLinecap="round"/>
+      <path d="M6 11 Q16 13 26 11" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+      <path d="M6 21 Q16 19 26 21" stroke={color} strokeWidth="1" strokeLinecap="round"/>
+    </svg>
+  );
+
+  /* АНГЛИЙСКИЙ — speech bubble Aa */
+  if (key.includes("английск") || key.includes("english")) return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <rect x="3" y="4" width="23" height="17" rx="4" stroke={color} strokeWidth="1.5" fill={f}/>
+      <path d="M8 21 L6 27 L13 21" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
+      <text x="6" y="16" fontSize="10" fontWeight="800" fill={color} fontFamily="Arial,sans-serif">Aa</text>
+    </svg>
+  );
+
+  /* IELTS — bullseye target */
+  if (key.includes("ielts") || type === "ielts") return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <circle cx="16" cy="16" r="12" stroke={color} strokeWidth="1.5"/>
+      <circle cx="16" cy="16" r="7.5" stroke={color} strokeWidth="1.5"/>
+      <circle cx="16" cy="16" r="3.5" fill={color}/>
+      <line x1="22" y1="9"  x2="26" y2="5" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="26" y1="5"  x2="28" y2="7" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="22" y1="9"  x2="24" y2="11" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+
+  /* SAT — five-pointed star */
+  if (key.includes("sat") || type === "sat") return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <path d="M16 4 L19.5 13 L29 13 L21.5 18.5 L24.5 28 L16 22.5 L7.5 28 L10.5 18.5 L3 13 L12.5 13 Z"
+            stroke={color} strokeWidth="1.5" strokeLinejoin="round" fill={f}/>
+    </svg>
+  );
+
+  /* ИНФОРМАТИКА — code brackets </> */
+  if (key.includes("информат")) return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <path d="M11 10 L5 16 L11 22" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M21 10 L27 16 L21 22" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+      <line x1="18" y1="8" x2="14" y2="24" stroke={color} strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  );
+
+  /* ЛИТЕРАТУРА — feather quill */
+  if (key.includes("литерат")) return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <path d="M7 26 Q13 19 17 13 Q23 5 29 4 Q27 10 21 17 Q17 21 12 26 Z"
+            stroke={color} strokeWidth="1.5" fill={f} strokeLinejoin="round"/>
+      <path d="M12 26 L6 29 L8 23" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M17 13 L12 18" stroke={color} strokeWidth="1.1" strokeLinecap="round"/>
+    </svg>
+  );
+
+  /* КАЗАХСКИЙ — "Кк" */
+  if (key.includes("казахск")) return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <text x="1" y="22" fontSize="17" fontWeight="800" fill={color} fontFamily="Arial,sans-serif">Кк</text>
+    </svg>
+  );
+
+  /* РУССКИЙ ЯЗЫК — "Аа" */
+  if (key.includes("русск")) return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <text x="1" y="22" fontSize="17" fontWeight="800" fill={color} fontFamily="Arial,sans-serif">Аа</text>
+    </svg>
+  );
+
+  /* DEFAULT — graduation cap */
+  return (
+    <svg viewBox="0 0 32 32" width={30} height={30} fill="none">
+      <path d="M4 14 L16 8 L28 14 L16 20 Z" stroke={color} strokeWidth="1.5" strokeLinejoin="round" fill={f}/>
+      <path d="M22 17 L22 24 Q16 28 10 24 L10 17" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <line x1="28" y1="14" x2="28" y2="22" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="28" cy="23" r="1.5" fill={color}/>
+    </svg>
+  );
 }
 
 /* ── Course Card ─────────────────────────────────────── */
@@ -61,7 +193,6 @@ function CourseCard({ course, navigate }) {
     sat:   { color: C.amber,  bg: C.amberPale  },
   };
   const t = map[course.course_type] || map.ent;
-  const Icon         = getCourseIcon(course);
   const lessonsCount = course.lessons_count ?? course.lessons ?? null;
   const duration     = course.duration ?? null;
   const price        = course.price ? Number(course.price) : null;
@@ -75,7 +206,7 @@ function CourseCard({ course, navigate }) {
       display: "flex", flexDirection: "column",
       boxShadow: "0 2px 8px rgba(0,0,0,.04)",
     }}>
-      {/* Top row: title + icon */}
+      {/* Top row: title + illustration */}
       <div style={{
         display: "flex", justifyContent: "space-between",
         alignItems: "flex-start", gap: 12, marginBottom: 12,
@@ -90,7 +221,7 @@ function CourseCard({ course, navigate }) {
           background: t.bg, borderRadius: 12,
           border: `1.5px solid ${t.color}20`,
         }}>
-          <Icon size={26} color={t.color} strokeWidth={1.8} />
+          <SubjectIllustration course={course} color={t.color} />
         </div>
       </div>
 
