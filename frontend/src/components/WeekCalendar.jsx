@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api';
+import useMobile from '../hooks/useMobile';
 import { Calendar, Clock, Video, BarChart2, ClipboardList, CheckCircle, FileText, Mail, Link as LinkIcon, RotateCw, Check, XCircle, Circle, ChevronUp, ChevronDown, Hourglass, Save } from 'lucide-react';
 
 const P = {
@@ -313,6 +314,7 @@ function SessionCard({ session, isTeacher, onCancel, onReschedule, onLinkUpdate 
    ══════════════════════════════════ */
 export default function WeekCalendar({ mode='teacher', homework=[] }){
   const isTeacher=mode==='teacher';
+  const isMobile=useMobile();
   const [sessions,setSessions]=useState([]);
   const [loading,setLoading]=useState(true);
   const [selectedDate,setSelectedDate]=useState(new Date());
@@ -351,13 +353,13 @@ export default function WeekCalendar({ mode='teacher', homework=[] }){
       {loading?(
         <div style={{textAlign:'center',padding:60,color:P.slate}}><div style={{marginBottom:12,display:'flex',justifyContent:'center'}}><Hourglass size={32}/></div>Загрузка...</div>
       ):(
-        <div style={{display:'grid',gridTemplateColumns:'230px 1fr 250px',gap:16,alignItems:'start'}}>
+        <div style={{display:'grid',gridTemplateColumns: isMobile ? '1fr' : '230px 1fr 250px',gap:16,alignItems:'start'}}>
 
           {/* LEFT: Mini Calendar */}
           <MiniCalendar sessions={sessions} selectedDate={selectedDate} onSelectDate={d=>setSelectedDate(d||today)}/>
 
           {/* CENTER: Day sessions */}
-          <div style={{background:P.white,borderRadius:20,border:`1.5px solid ${P.border}`,padding:'20px',minHeight:400}}>
+          <div style={{background:P.white,borderRadius:20,border:`1.5px solid ${P.border}`,padding: isMobile ? '16px' : '20px',minHeight: isMobile ? 'auto' : 400}}>
             {/* Day header */}
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:16,flexWrap:'wrap',gap:8}}>
               <div>
@@ -410,8 +412,8 @@ export default function WeekCalendar({ mode='teacher', homework=[] }){
             </div>
           </div>
 
-          {/* RIGHT: Panel */}
-          <RightPanel sessions={sessions} selectedDate={selectedDate} homework={homework}/>
+          {/* RIGHT: Panel — hidden on mobile */}
+          {!isMobile && <RightPanel sessions={sessions} selectedDate={selectedDate} homework={homework}/>}
         </div>
       )}
     </div>

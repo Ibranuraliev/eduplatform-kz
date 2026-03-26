@@ -421,12 +421,27 @@ export default function StudentDashboard() {
             </button>
 
             {notifOpen && (
-              <div style={{ position:'absolute',top:52,right:0,width: isMobile ? 'calc(100vw - 24px)' : 360,background:P.white,border:`1.5px solid ${P.border}`,borderRadius:20,boxShadow:'0 16px 48px rgba(0,0,0,.12)',zIndex:200,overflow:'hidden' }}>
+              <div style={{
+                position: isMobile ? 'fixed' : 'absolute',
+                top: isMobile ? 64 : 52,
+                left: isMobile ? 0 : 'auto',
+                right: isMobile ? 0 : 0,
+                width: isMobile ? '100vw' : 360,
+                background:P.white,
+                border:`1.5px solid ${P.border}`,
+                borderRadius: isMobile ? '0 0 20px 20px' : 20,
+                boxShadow:'0 16px 48px rgba(0,0,0,.12)',
+                zIndex:200,
+                overflow:'hidden',
+              }}>
                 <div style={{ padding:'16px 20px',borderBottom:`1px solid ${P.border}`,display:'flex',justifyContent:'space-between',alignItems:'center' }}>
                   <span style={{ fontWeight:800,fontSize:15,color:P.ink }}>Уведомления</span>
-                  {unreadCount>0 && <button onClick={markAllRead} style={btnO({padding:'5px 12px',fontSize:12})}>Прочитать все</button>}
+                  <div style={{ display:'flex',gap:8,alignItems:'center' }}>
+                    {unreadCount>0 && <button onClick={markAllRead} style={btnO({padding:'5px 12px',fontSize:12})}>Прочитать все</button>}
+                    {isMobile && <button onClick={()=>setNotifOpen(false)} style={{ background:'none',border:'none',cursor:'pointer',padding:4,color:P.slate }}><X size={20} /></button>}
+                  </div>
                 </div>
-                <div style={{ maxHeight:380,overflowY:'auto',padding:12,display:'flex',flexDirection:'column',gap:8 }}>
+                <div style={{ maxHeight: isMobile ? 'calc(100vh - 130px)' : 380,overflowY:'auto',padding:12,display:'flex',flexDirection:'column',gap:8 }}>
                   {notifications.length===0 ? (
                     <div style={{ textAlign:'center',padding:'32px 0',color:P.slate,fontSize:14 }}><div style={{ fontSize:36,marginBottom:8 }}><BellOff size={36} color={P.slate} /></div>Нет уведомлений</div>
                   ) : notifications.slice(0,15).map(n=><NotifItem key={n.id} notif={n} onRead={markRead}/>)}
@@ -452,6 +467,11 @@ export default function StudentDashboard() {
             </div>
             {!isMobile && <span style={{ fontWeight:700,fontSize:14,color:tab==='profile'?'#fff':P.ink }}>{user?.first_name} {user?.last_name}</span>}
           </div>
+          {isMobile && (
+            <button onClick={()=>navigate('/chat')} style={{ background:'transparent',border:`1.5px solid ${P.border}`,borderRadius:12,width:42,height:42,display:'flex',alignItems:'center',justifyContent:'center',cursor:'pointer' }}>
+              <MessageCircle size={18} color={P.violet} />
+            </button>
+          )}
           {!isMobile && <button onClick={()=>navigate('/chat')} style={{ background:P.violetPale, border:`1.5px solid ${P.violetBorder}`, color:P.violet, borderRadius:12, padding:'8px 16px', cursor:'pointer', fontSize:14, fontWeight:700, fontFamily:font, display:'flex',alignItems:'center',gap:6 }}><MessageCircle size={16} /> Чат</button>}
           {!isMobile && <button onClick={logout} style={{ background:'none',border:'none',color:P.slate,cursor:'pointer',fontSize:14,fontWeight:600,fontFamily:font,display:'flex',alignItems:'center',gap:6 }}><LogOut size={16} /> Выйти</button>}
         </div>
@@ -1171,7 +1191,7 @@ export default function StudentDashboard() {
                 <div style={{ fontWeight:900,fontSize:22,color:P.ink,letterSpacing:-0.5 }}>Мой профиль</div>
 
                 {/* Profile card: photo left, data right */}
-                <div style={card({display:'flex',gap:32,flexWrap:'wrap',padding:'28px 32px'})}>
+                <div style={card({display:'flex',gap: isMobile ? 20 : 32,flexWrap:'wrap',padding: isMobile ? '20px 16px' : '28px 32px',flexDirection: isMobile ? 'column' : 'row',alignItems: isMobile ? 'center' : 'flex-start'})}>
                   {/* Left: Photo + buttons */}
                   <div style={{ display:'flex',flexDirection:'column',alignItems:'center',gap:12,flexShrink:0 }}>
                     <div style={{ position:'relative' }}>
@@ -1218,9 +1238,9 @@ export default function StudentDashboard() {
                   </div>
 
                   {/* Right: Student data */}
-                  <div style={{ flex:1,minWidth:0 }}>
-                    <div style={{ fontWeight:900,fontSize:24,color:P.ink,letterSpacing:-0.3,marginBottom:4 }}>{profileForm.first_name} {profileForm.last_name}</div>
-                    <div style={{ fontSize:14,color:P.slate,marginBottom:16,display:'flex',alignItems:'center',gap:6 }}><Phone size={14} color={P.slate} /> {profileForm.phone}</div>
+                  <div style={{ flex:1,minWidth:0,width: isMobile ? '100%' : 'auto' }}>
+                    <div style={{ fontWeight:900,fontSize: isMobile ? 20 : 24,color:P.ink,letterSpacing:-0.3,marginBottom:4,textAlign: isMobile ? 'center' : 'left' }}>{profileForm.first_name} {profileForm.last_name}</div>
+                    <div style={{ fontSize:14,color:P.slate,marginBottom:16,display:'flex',alignItems:'center',gap:6,justifyContent: isMobile ? 'center' : 'flex-start' }}><Phone size={14} color={P.slate} /> {profileForm.phone}</div>
                     <div style={{ display:'grid',gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',gap:10 }}>
                       {[
                         {label:'Роль',          val:'Студент'},
