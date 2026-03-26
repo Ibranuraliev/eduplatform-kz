@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { coursesAPI } from "../api";
 import { Star, CheckCircle, TrendingUp, Radio, BookOpen, CreditCard, Users, Rocket, Video, ClipboardCheck, BarChart2, UserCheck, Gift, LayoutDashboard } from 'lucide-react';
+import useMobile from "../hooks/useMobile";
 
 /* ── Tokens ─────────────────────────────────────────── */
 const C = {
@@ -168,6 +169,7 @@ function FAQItem({ q, a }) {
 export default function CoursesPage() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const isMobile = useMobile();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [scrolled, setScrolled] = useState(false);
@@ -248,13 +250,16 @@ export default function CoursesPage() {
         }
         .btn-outline { transition: all .2s ease; }
         .btn-outline:hover { border-color: ${C.violet} !important; color: ${C.violet} !important; background: ${C.violetPale} !important; }
+        @media (max-width: 768px) {
+          .nav-links { display: none !important; }
+        }
       `}</style>
 
       {/* ── NAVBAR ── */}
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
         height: 64, display: "flex", alignItems: "center",
-        padding: "0 48px", justifyContent: "space-between",
+        padding: isMobile ? "0 16px" : "0 48px", justifyContent: "space-between",
         background: scrolled ? "rgba(255,255,255,.96)" : "transparent",
         backdropFilter: scrolled ? "blur(16px)" : "none",
         borderBottom: scrolled ? `1px solid ${C.border}` : "none",
@@ -266,7 +271,7 @@ export default function CoursesPage() {
           <span>Platform</span>
         </div>
 
-        <div style={{ display: "flex", gap: 28, alignItems: "center" }}>
+        <div className="nav-links" style={{ display: "flex", gap: 28, alignItems: "center" }}>
           {[["Курсы","#courses"],["Как учиться","#how"],["Отзывы","#reviews"],["FAQ","#faq"]].map(([l,h],i) => (
             <a key={i} href={h} className="nav-link" style={{ color: C.gray, fontSize: 14, textDecoration: "none", fontWeight: 500, transition: "color .2s" }}>{l}</a>
           ))}
@@ -298,14 +303,14 @@ export default function CoursesPage() {
       {/* ── HERO ── */}
       <section style={{
         minHeight: "100vh", display: "flex", alignItems: "center",
-        padding: "80px 48px 80px",
+        padding: isMobile ? "96px 20px 48px" : "80px 48px 80px",
         background: `radial-gradient(ellipse 90% 70% at 60% 30%, ${C.violetPale} 0%, ${C.bg} 60%)`,
         position: "relative", overflow: "hidden",
       }}>
         {/* Decorative blobs */}
         <div style={{ position:"absolute", top:-200, right:-100, width:600, height:600, borderRadius:"50%", background:`radial-gradient(circle, ${C.violet}10 0%, transparent 65%)`, pointerEvents:"none" }}/>
         <div style={{ position:"absolute", bottom:-150, left:"35%", width:500, height:500, borderRadius:"50%", background:`radial-gradient(circle, ${C.blue}07 0%, transparent 65%)`, pointerEvents:"none" }}/>
-        <div style={{ maxWidth: 1100, margin: "0 auto", width:"100%", display:"grid", gridTemplateColumns:"1.1fr 0.9fr", gap:64, alignItems:"center" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", width:"100%", display:"grid", gridTemplateColumns: isMobile ? "1fr" : "1.1fr 0.9fr", gap: isMobile ? 0 : 64, alignItems:"center" }}>
 
           {/* Left */}
           <div className="hero-text">
@@ -370,7 +375,7 @@ export default function CoursesPage() {
           </div>
 
           {/* Right — cards */}
-          <div className="hero-cards" style={{ display:"flex", flexDirection:"column", gap:14 }}>
+          <div className="hero-cards" style={{ display: isMobile ? "none" : "flex", flexDirection:"column", gap:14 }}>
             {/* Live card */}
             <div style={{
               background:"#fff", borderRadius:20, padding:24,
@@ -424,8 +429,8 @@ export default function CoursesPage() {
       </section>
 
       {/* ── STATS ── */}
-      <section style={{ background:`linear-gradient(135deg, ${C.violet} 0%, ${C.violetDark} 100%)`, padding:"52px 48px" }}>
-        <div style={{ maxWidth:1100, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:24, textAlign:"center" }}>
+      <section style={{ background:`linear-gradient(135deg, ${C.violet} 0%, ${C.violetDark} 100%)`, padding: isMobile ? "40px 20px" : "52px 48px" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto", display:"grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap:24, textAlign:"center" }}>
           {[
             { end:500, suffix:"+", label:"Студентов" },
             { end:95,  suffix:"%", label:"Сдают с первого раза" },
@@ -433,8 +438,8 @@ export default function CoursesPage() {
             { end:3,   suffix:" года", label:"На рынке" },
           ].map((s,i) => (
             <div key={i} className="stat-card" style={{
-              borderRight: i<3 ? "1px solid rgba(255,255,255,.15)" : "none",
-              paddingRight: i<3 ? 24 : 0, transition:"all .25s",
+              borderRight: (!isMobile && i<3) ? "1px solid rgba(255,255,255,.15)" : "none",
+              paddingRight: (!isMobile && i<3) ? 24 : 0, transition:"all .25s",
             }}>
               <div style={{ fontSize:48, fontWeight:800, color:"#fff", letterSpacing:-1.5 }}>
                 <Counter end={s.end} suffix={s.suffix}/>
@@ -446,7 +451,7 @@ export default function CoursesPage() {
       </section>
 
       {/* ── FEATURES ── */}
-      <section style={{ padding:"96px 48px", background:C.surface }}>
+      <section style={{ padding: isMobile ? "60px 20px" : "96px 48px", background:C.surface }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:60 }}>
             <span style={{
@@ -458,7 +463,7 @@ export default function CoursesPage() {
             </h2>
           </div>
 
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:20 }}>
+          <div style={{ display:"grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3,1fr)", gap:20 }}>
             {features.map((f,i) => {
               const Icon = f.Icon;
               return (
@@ -487,9 +492,9 @@ export default function CoursesPage() {
       </section>
 
       {/* ── COURSES ── */}
-      <section id="courses" style={{ padding:"96px 48px", background:C.bg }}>
+      <section id="courses" style={{ padding: isMobile ? "60px 20px" : "96px 48px", background:C.bg }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:52 }}>
+          <div style={{ display:"flex", flexDirection: isMobile ? "column" : "row", justifyContent:"space-between", alignItems: isMobile ? "flex-start" : "flex-end", gap:12, marginBottom:52 }}>
             <div>
               <span style={{ fontSize:12, fontWeight:700, letterSpacing:1.2, textTransform:"uppercase", color:C.violet, background:C.violetPale, borderRadius:6, padding:"4px 12px" }}>Программы</span>
               <h2 style={{ fontSize:"clamp(30px,4vw,46px)", fontWeight:800, margin:"16px 0 0", letterSpacing:-1.2, color:C.ink }}>Выбери свой курс</h2>
@@ -505,7 +510,7 @@ export default function CoursesPage() {
             <div style={{ textAlign:"center", padding:80, color:C.gray }}>Курсы скоро появятся</div>
           ) : (
             <>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))", gap:20 }}>
+              <div style={{ display:"grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fill,minmax(320px,1fr))", gap:20 }}>
                 {(showAllCourses ? courses : courses.slice(0,6)).map(c => <CourseCard key={c.id} course={c} navigate={navigate}/>)}
               </div>
               {courses.length > 6 && (
@@ -542,7 +547,7 @@ export default function CoursesPage() {
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section id="how" style={{ padding:"96px 48px", background:C.surface }}>
+      <section id="how" style={{ padding: isMobile ? "60px 20px" : "96px 48px", background:C.surface }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:72 }}>
             <span style={{ fontSize:12, fontWeight:700, letterSpacing:1.2, textTransform:"uppercase", color:C.violet, background:C.violetPale, borderRadius:6, padding:"4px 12px" }}>Как учиться</span>
@@ -550,7 +555,7 @@ export default function CoursesPage() {
             <p style={{ color:C.gray, fontSize:16, marginTop:14, lineHeight:1.7 }}>4 шага до первого результата</p>
           </div>
 
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:20, position:"relative" }}>
+          <div style={{ display:"grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap:20, position:"relative" }}>
             <div style={{ position:"absolute", top:44, left:"12%", right:"12%", height:2, background:`linear-gradient(90deg, ${C.violet}60, rgba(139,92,246,.15))`, zIndex:0, borderRadius:2 }}/>
             {[
               { n:"01", icon:BookOpen,  color:C.violet,  bg:C.violetPale, title:"Выбери курс",  desc:"Просмотри ЕНТ, IELTS и SAT программы — найди свой предмет." },
@@ -585,14 +590,14 @@ export default function CoursesPage() {
       </section>
 
       {/* ── REVIEWS ── */}
-      <section id="reviews" style={{ padding:"96px 48px", background:C.bg }}>
+      <section id="reviews" style={{ padding: isMobile ? "60px 20px" : "96px 48px", background:C.bg }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:56 }}>
             <span style={{ fontSize:12, fontWeight:700, letterSpacing:1.2, textTransform:"uppercase", color:C.violet, background:C.violetPale, borderRadius:6, padding:"4px 12px" }}>Отзывы</span>
             <h2 style={{ fontSize:"clamp(30px,4vw,46px)", fontWeight:800, margin:"18px 0 0", letterSpacing:-1.2, color:C.ink }}>Студенты говорят</h2>
           </div>
 
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:20 }}>
+          <div style={{ display:"grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2,1fr)", gap:20 }}>
             {reviews.map((r,i) => (
               <div key={i} className="review-card" style={{
                 background:C.bg, borderRadius:20, padding:32,
@@ -623,7 +628,7 @@ export default function CoursesPage() {
       </section>
 
       {/* ── FAQ ── */}
-      <section id="faq" style={{ padding:"96px 48px", background:C.surface }}>
+      <section id="faq" style={{ padding: isMobile ? "60px 20px" : "96px 48px", background:C.surface }}>
         <div style={{ maxWidth:700, margin:"0 auto" }}>
           <div style={{ textAlign:"center", marginBottom:52 }}>
             <span style={{ fontSize:12, fontWeight:700, letterSpacing:1.2, textTransform:"uppercase", color:C.violet, background:C.violetPale, borderRadius:6, padding:"4px 12px" }}>FAQ</span>
@@ -637,7 +642,7 @@ export default function CoursesPage() {
 
       {/* ── CTA ── */}
       <section style={{
-        padding:"100px 48px", textAlign:"center",
+        padding: isMobile ? "60px 20px" : "100px 48px", textAlign:"center",
         background:`linear-gradient(135deg, ${C.violet} 0%, ${C.violetDark} 100%)`,
         position:"relative", overflow:"hidden",
       }}>
@@ -678,9 +683,9 @@ export default function CoursesPage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ background:C.ink, padding:"64px 48px 40px" }}>
+      <footer style={{ background:C.ink, padding: isMobile ? "40px 20px 32px" : "64px 48px 40px" }}>
         <div style={{ maxWidth:1100, margin:"0 auto" }}>
-          <div style={{ display:"grid", gridTemplateColumns:"2fr 1fr 1fr 1fr", gap:48, marginBottom:48, paddingBottom:48, borderBottom:"1px solid rgba(255,255,255,.08)" }}>
+          <div style={{ display:"grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "2fr 1fr 1fr 1fr", gap: isMobile ? 24 : 48, marginBottom:48, paddingBottom:48, borderBottom:"1px solid rgba(255,255,255,.08)" }}>
             <div>
               <div style={{ fontSize:20, fontWeight:800, color:"#fff", marginBottom:14, letterSpacing:-0.5 }}>
                 <span style={{ background:`linear-gradient(135deg,${C.violetSoft},#A78BFA)`, WebkitBackgroundClip:"text", backgroundClip:"text", WebkitTextFillColor:"transparent", color:"transparent", display:"inline-block" }}>Edu</span>Platform
